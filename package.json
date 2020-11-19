@@ -1,0 +1,21 @@
+{
+  "name": "@cristalix/client-api",
+  "version": "2.0.3",
+  "description": "",
+  "main": "lib/simple-gui.js",
+  "types": "lib/simple-gui.d.ts",
+  "scripts": {
+  	"prepublish": "rm -rf lib && tsc -p tsconfig.json"
+  },
+  "files": [
+  	"lib/",
+  	"src/index.d.ts"
+  ],
+  "keywords": [],
+  "author": "cristalix",
+  "license": "ISC",
+  "devDependencies": {
+    "ts-loader": "^8.0.1",
+    "typescript": "^3.9.7"
+  }
+}
