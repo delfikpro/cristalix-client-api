@@ -1,6 +1,6 @@
 {
   "name": "@cristalix/client-api",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "",
   "main": "lib/simple-gui.js",
   "types": "lib/simple-gui.d.ts",
@@ -11,6 +11,8 @@
   	"lib/",
   	"src/index.d.ts"
   ],
+  "homepage": "https://github.com/DelfikPro/cristalix-client-api",
+  "repository": "github:DelfikPro/cristalix-client-api",
   "keywords": [],
   "author": "cristalix",
   "license": "ISC",
