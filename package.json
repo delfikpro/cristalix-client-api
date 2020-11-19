@@ -5,11 +5,11 @@
   "main": "lib/simple-gui.js",
   "types": "lib/simple-gui.d.ts",
   "scripts": {
-  	"prepublish": "rm -rf lib && tsc -p tsconfig.json"
+    "prepublish": "rm -rf lib && tsc -p tsconfig.json"
   },
   "files": [
-  	"lib/",
-  	"src/index.d.ts"
+    "lib/",
+    "src/index.d.ts"
   ],
   "homepage": "https://github.com/DelfikPro/cristalix-client-api",
   "repository": "github:DelfikPro/cristalix-client-api",
