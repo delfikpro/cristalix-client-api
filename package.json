@@ -1,15 +1,16 @@
 {
   "name": "@cristalix/client-api",
-  "version": "2.0.5",
+  "version": "2.0.13",
   "description": "",
   "main": "lib/simple-gui.js",
   "types": "lib/simple-gui.d.ts",
+  "composite": "true",
   "scripts": {
-    "prepublish": "rm -rf lib && tsc -p tsconfig.json"
+    "prepublishOnly": "rm -rf lib && tsc -p tsconfig.json"
   },
   "files": [
     "lib/",
-    "src/index.d.ts"
+    "reference/cristalix.d.ts"
   ],
   "homepage": "https://github.com/DelfikPro/cristalix-client-api",
   "repository": "github:DelfikPro/cristalix-client-api",

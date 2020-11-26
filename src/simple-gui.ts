@@ -1,4 +1,4 @@
-/// <reference path="./cristalix.ts" />
+/// <reference path="../reference/cristalix.d.ts" />
 
 import * as easing from './easing';
 import * as vecmath from './vecmath';
@@ -97,7 +97,7 @@ export function hex2Color(value: number, includeAlpha?: boolean) : Color {
 
 
 export function getTime(): number {
-    return JavaSystem.currentTimeMillis();
+    return System.currentTimeMillis();
 }
 
 export type MouseHandler = (screenState: ScreenState) => void;
@@ -169,25 +169,25 @@ el = {x: 1, color: {}};
 
 export abstract class Element {
 
-    x: Animatable;
-    y: Animatable;
-    z: Animatable;
-    a: Animatable;
-    r: Animatable;
-    g: Animatable;
-    b: Animatable;
-    scale: Animatable;
-    alignX: Animatable;
-    alignY: Animatable;
-    originX: Animatable;
-    originY: Animatable;
-    rotationX: Animatable;
-    rotationY: Animatable;
-    rotationZ: Animatable;
-    animatables: Animatable[];
-    noDepth: boolean;
-    enabled: boolean;
-    lastColor: number;
+    public x: Animatable;
+    public y: Animatable;
+    public z: Animatable;
+    public a: Animatable;
+    public r: Animatable;
+    public g: Animatable;
+    public b: Animatable;
+    public scale: Animatable;
+    public alignX: Animatable;
+    public alignY: Animatable;
+    public originX: Animatable;
+    public originY: Animatable;
+    public rotationX: Animatable;
+    public rotationY: Animatable;
+    public rotationZ: Animatable;
+    public animatables: Animatable[];
+    public noDepth: boolean;
+    public enabled?: boolean;
+    public lastColor: number;
 
     constructor(data: ElementData) {
 
@@ -292,9 +292,9 @@ export function text(data: TextData): Text {
 
 export class Text extends Element {
 
-    text: string;
-    autoFit: boolean;
-    shadow: boolean;
+    public text?: string;
+    public autoFit: boolean;
+    public shadow: boolean;
 
     constructor(data: TextData) {
         super(data);
@@ -338,23 +338,23 @@ export function rect(data: BoxData): Box {
 
 export class Box extends Element {
 
-    width: Animatable;
-    height: Animatable;
-    children: Element[];
-    texture: string | ResourceLocation;
-    uMin: number;
-    vMin: number;
-    uDelta: number;
-    vDelta: number;
-    textureWidth: number;
-    textureHeight: number;
-    temp_magic: boolean;
-    onLeftClick: MouseHandler;
-    onRightClick: MouseHandler;
-    onHover: (screenState: ScreenState, hovered: boolean) => void;
-    afterRender: () => void;
-    beforeRender: () => void;
-    hovered: boolean = false;
+    public width: Animatable;
+    public height: Animatable;
+    public children: Element[];
+    public texture: string | ResourceLocation;
+    public uMin: number;
+    public vMin: number;
+    public uDelta: number;
+    public vDelta: number;
+    public textureWidth: number;
+    public textureHeight: number;
+    public temp_magic: boolean;
+    public onLeftClick: MouseHandler;
+    public onRightClick: MouseHandler;
+    public onHover: (screenState: ScreenState, hovered: boolean) => void;
+    public afterRender: () => void;
+    public beforeRender: () => void;
+    public hovered: boolean = false;
 
     constructor(data: BoxData) {
         super(data);

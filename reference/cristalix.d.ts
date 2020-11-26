@@ -597,7 +597,7 @@ declare class Runtime {
     static totalMemory(): number;
 }
 
-declare class JavaSystem {
+declare class System {
     static exit(code: number): void;
 
     static halt(code: number): void;
