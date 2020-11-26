@@ -339,36 +339,36 @@ type TopEntry = {
 
 	}
 
-	let testTop = new Top('test', {x: 0, y: 100, z: 0, yaw: 45});
+	// let testTop = new Top('test', {x: 0, y: 100, z: 0, yaw: 45});
 	let tops: Top[] = [
-	testTop
+	// testTop
 	];
-	testTop.updateData([
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-		{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
-	]);
+	// testTop.updateData([
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// 	{key: 'test' + Math.random() * 10000, value: Math.random() * 1000000},
+	// ]);
 
 	Events.on(plugin, 'game_tick_pre', () => {
 		let dwheel = Mouse.getDWheel();
