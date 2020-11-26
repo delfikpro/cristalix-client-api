@@ -539,51 +539,49 @@ export const overlay: Element[] = [];
 export var zIndex = 0;
 
 
-export function register(listener: any) {
-    Events.on(listener, 'gui_overlay_render', function(e) {
+Events.on(plugin, 'gui_overlay_render', function(e) {
 
-        // Draw.drawString(str, 10, 10);
+    // Draw.drawString(str, 10, 10);
 
-        let screenState = getScreenState();
+    let screenState = getScreenState();
 
-        translate(0, 0, +zIndex);
+    translate(0, 0, +zIndex);
 
-        for (let element of overlay)
-            element.render(screenState.time, screenState.width, screenState.height);
+    for (let element of overlay)
+        element.render(screenState.time, screenState.width, screenState.height);
 
-        translate(0, 0, -zIndex);
+    translate(0, 0, -zIndex);
 
-    });
+});
 
-    // ToDo: one-time click detection
-    // const mouseButtons = [
-    //     {event: 'left_click', pressed: false, property: 'onLeftClick'},
-    //     {event: 'right_click', pressed: false, property: 'onRightClick'},
-    // ]
+// ToDo: one-time click detection
+// const mouseButtons = [
+//     {event: 'left_click', pressed: false, property: 'onLeftClick'},
+//     {event: 'right_click', pressed: false, property: 'onRightClick'},
+// ]
 
-    Events.on(listener, 'game_loop', function(e) {      
-        let screenState = getScreenState();
+Events.on(plugin, 'game_loop', function(e) {      
+    let screenState = getScreenState();
 
-        for (let element of overlay) {
-            element.checkHovered(screenState, screenState.width, screenState.height);
-        }
+    for (let element of overlay) {
+        element.checkHovered(screenState, screenState.width, screenState.height);
+    }
 
-        // for (var i = 0; i < mouseButtons.length; i++) {
-        //     let button = mouseButtons[i];
-        //     if (!Mouse.isButtonDown(i)) {
-        //         button.pressed = false;
-        //         continue;
-        //     }
-        //     if (button.pressed) continue;
-        //     button.pressed = true;
-        //     for (var j = 0; j < root.children.length; j++) {
-        //         if (root.children[j].executeHovered) 
-        //             root.children[j].executeHovered(screenState, button.property, screenState.width, screenState.height);
-        //     }
-        //     Events.post(button.event, screenState);
-        // }
-    });
+    // for (var i = 0; i < mouseButtons.length; i++) {
+    //     let button = mouseButtons[i];
+    //     if (!Mouse.isButtonDown(i)) {
+    //         button.pressed = false;
+    //         continue;
+    //     }
+    //     if (button.pressed) continue;
+    //     button.pressed = true;
+    //     for (var j = 0; j < root.children.length; j++) {
+    //         if (root.children[j].executeHovered) 
+    //             root.children[j].executeHovered(screenState, button.property, screenState.width, screenState.height);
+    //     }
+    //     Events.post(button.event, screenState);
+    // }
+});
 
-}
 
 

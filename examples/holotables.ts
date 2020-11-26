@@ -9,7 +9,6 @@ type TopEntry = {
 };
 
 (function(plugin: any) {
-	gui.register(plugin);
 
 	const pushMatrix = GL11.glPushMatrix;
 	const popMatrix = GL11.glPopMatrix;
