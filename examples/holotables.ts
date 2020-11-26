@@ -179,7 +179,7 @@ type TopEntry = {
 	        // GL11.glDepthFunc(GL11.GL_LESS);
 	        gui.Hz.i = 0;
 
-			this.entity.render(JavaSystem.currentTimeMillis(), 16, 16);
+			this.entity.render(System.currentTimeMillis(), 16, 16);
 
 	        // GL11.glDepthFunc(GL11.GL_LEQUAL);
 
