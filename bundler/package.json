@@ -1,0 +1,36 @@
+{
+  "name": "@cristalix/bundler",
+  "version": "1.0.8",
+  "description": "Bundler for Cristalix client scripts",
+  "main": "./index.js",
+  "bin": {
+  	"cristalix-bundler": "./index.js"
+  },
+  "engines": {
+    "node": ">=10.13.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "files": [
+  	"index.js",
+  	"tsconfig.json",
+  	"webpack.config.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/delfikpro/cristalix-client-api.git"
+  },
+  "author": "DelfikPro",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/delfikpro/cristalix-client-api/issues"
+  },
+  "homepage": "https://github.com/delfikpro/cristalix-client-api#readme",
+  "dependencies": {
+    "ts-loader": "^8.0.11",
+    "typescript": "^4.1.2",
+    "webpack": "^5.8.0",
+    "webpack-cli": "^4.2.0"
+  }
+}
