@@ -1,4 +1,131 @@
 
+declare class ChunkProvider {
+
+    getLoadedChunk(x: number, z: number): Chunk;
+
+    provideChunk(x: number, z: number): Chunk;
+  
+    tick(): boolean;
+  
+    makeString(): string;
+  
+    isChunkGeneratedAt(x: number, z: number): boolean;
+  
+    load(x: number, z: number): Chunk;
+  
+    unload(x: number, z: number): void;
+  
+    put(chunk: Chunk): void;
+
+}
+
+declare class IBlockState {
+
+}
+
+declare type Runnable = () => {};
+declare type Consumer<T> = (data: T) => {};
+
+declare class EntityArmorStand extends EntityLivingBase {
+
+    setSmall(value: boolean): void;
+
+    isSmall(): boolean;
+  
+    setShowArms(value: boolean): void;
+  
+    getShowArms(): boolean;
+  
+    setNoBasePlate(value: boolean): void;
+  
+    hasNoBasePlate(): boolean;
+  
+    setMarker(value: boolean): void;
+  
+    hasMarker(): boolean;
+
+}
+
+declare class Chunk {
+
+    getHeight(pos: BlockPos): number;
+
+    getHeightValue(x: number, z: number): number;
+  
+    getTopFilledSegment(): number;
+  
+    // getBlockStorageArray(): ExtendedBlockStorage[];
+  
+    generateSkylightMap(): void;
+  
+    getBlockState(x: number, y: number, z: number): IBlockState;
+  
+    setBlockState(pos: BlockPos, state: IBlockState): IBlockState;
+  
+    // getLightFor(p_getLightFor_1_: EnumSkyBlock, x: number, y: number, z: number): number;
+  
+    // setLightFor(p_setLightFor_1_: EnumSkyBlock, x: number, y: number, z: number, dflt: number): void;
+  
+    getLightSubtracted(x: number, y: number, z: number, dflt: number): number;
+  
+    canSeeSky(x: number, y: number, z: number): boolean;
+  
+    isEmpty(): boolean;
+  
+    getPrecipitationHeightY(x: number, z: number): number;
+  
+    isPopulated(): boolean;
+  
+    wasTicked(): boolean;
+  
+    isEmptyBetween(x: number, z: number): boolean;
+  
+    // setStorageArrays(arrays: ExtendedBlockStorage[]): void;
+  
+    // read(buffer: PacketBuffer, extractedSize: number, full: boolean): void;
+  
+    // getBiome(x: number, z: number, provider: BiomeProvider): Biome;
+  
+    getBiomeArray(): number[];
+  
+    setBiomeArray(biomeArray: number[]): void;
+  
+    resetRelightChecks(): void;
+  
+    enqueueRelightChecks(): void;
+  
+    checkLight(): void;
+  
+    isLoaded(): boolean;
+  
+    markLoaded(loaded: boolean): void;
+  
+    getWorld(): World;
+  
+    getHeightMap(): number[];
+  
+    setHeightMap(heightMap: number[]): void;
+  
+    isTerrainPopulated(): boolean;
+  
+    setTerrainPopulated(terrainPopulated: boolean): void;
+  
+    isLightPopulated(): boolean;
+  
+    setLightPopulated(lightPopulated: boolean): void;
+  
+    getLowestHeight(): number;
+  
+    getX(): number;
+  
+    getZ(): number;
+  
+    getKey(): number;
+  
+
+}
+
+
 declare class EntityPlayerSP extends EntityPlayer {
 
 }
@@ -624,11 +751,49 @@ declare class World {
     static getTime(): number | 0;
 
     static getTotalTime(): number | 0;
+
+    // RayTraceResult rayTraceBlocks(Vec3d start, Vec3d end, boolean stopOnLiquid,
+    //     boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock);
+  
+    spawnEntity(entity: Entity): boolean;
+  
+    removeEntity(entity: Entity): void;
+  
+    getThunderStrength(p_getThunderStrength_1_: number): number;
+  
+    setThunderStrength(p_setThunderStrength_1_: number): void;
+  
+    getRainStrength(p_getRainStrength_1_: number): number;
+  
+    setRainStrength(p_setRainStrength_1_: number): void;
+  
+    setBlockState(pos: BlockPos, state: IBlockState, flag: number): boolean;
+  
+    setBlockToAir(p_setBlockToAir_1_: BlockPos): boolean;
+  
+    destroyBlock(p_destroyBlock_1_: BlockPos, p_destroyBlock_2_: boolean): boolean;
+  
+    getBlockState(p_getBlockState_1_: number, p_getBlockState_2_: number, p_getBlockState_3_: number): IBlockState;
+  
+    getChunkProvider(): ChunkProvider;
+  
+    markBlockRangeForRenderUpdate(p1: number, p2: number, p3: number, p4: number, p5: number, p6: number): void;
+  
+    // void makeFireworks(double x, double y, double z, double motionX, double motionY, double motionZ,
+    //     NBTTagCompound data);
+  
+    setChunkProvider(chunkProvider: ChunkProvider): void;
+  
+    // void spawnParticle(EnumParticleTypes types, boolean isLongDistance, double x, double y, double z,
+        // double motionX, double motionY, double motionZ, int... data);
+
 }
 
 declare class Minecraft {
 
     getPlayer(): EntityPlayerSP;
+
+    getWorld(): World;
 
 }
 
