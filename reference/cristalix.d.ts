@@ -19,6 +19,18 @@ declare class ChunkProvider {
 
 }
 
+declare class Block {
+
+    static getIdFromBlock(block: Block): number;
+    
+    static getStateId(state: IBlockState): number;
+    
+    static getBlockById(id: number): Block;
+    
+    static getStateById(id: number): IBlockState;
+
+}
+
 declare class IBlockState {
 
 }
