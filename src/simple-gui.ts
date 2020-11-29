@@ -13,6 +13,15 @@ const scale = GL11.glScalef;
 const depthMask = GL11.glDepthMask;
 const color = GL11.glColor4f;
 
+var animationsEnabled = true;
+
+export function enableAnimations() {
+    animationsEnabled = false;
+}
+
+export function disableAnimations() {
+    animationsEnabled = false;
+}
 
 export const CENTER = {x: 0.5, y: 0.5};
 export const LEFT = {x: 0, y: 0.5};
@@ -23,7 +32,6 @@ export const TOP_RIGHT = {x: 1, y: 0};
 export const TOP_LEFT = {x: 0, y: 0};
 export const BOTTOM_RIGHT = {x: 1, y: 1};
 export const BOTTOM_LEFT = {x: 0, y: 1};
-
 
 export type Callback = () => void;
 
