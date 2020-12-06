@@ -1097,7 +1097,7 @@ declare interface RenderItem {
 
     renderItemOverlayIntoGUI(fr: FontRenderer, stack: ItemStack, x: int, y: int, text: string): void;
 }
-export const renderItem: RenderItem;
+declare const renderItem: RenderItem;
 
 declare class Inventory {
 
@@ -1492,7 +1492,8 @@ declare interface NetHandlerPlayClient {
 
     removePlayerInfo(key: UUID | string): void;
 }
-export const connection: NetHandlerPlayClient | null;
+
+declare const connection: NetHandlerPlayClient | null;
 
 declare enum RayTraceHitType {
     MISS = 'MISS',
