@@ -59,4 +59,3 @@ export const inBounce = (x: number) => 1 - outBounce(1 - x);
 export const bothBounce = (x : number) => x < 0.5 ? 
 	(1 - outBounce(+1 - 2 * x) / 2) :
 	(1 + outBounce(-1 + 2 * x) / 2);
-

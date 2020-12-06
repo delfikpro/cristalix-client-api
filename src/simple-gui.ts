@@ -288,12 +288,6 @@ export abstract class Element {
 
 }
 
-export class Hz {
-
-    static i: number;
-
-}
-
 export function text(data: TextData): Text {
     return new Text(data);
 }
@@ -590,6 +584,3 @@ Events.on(plugin, 'game_loop', function(e) {
     //     Events.post(button.event, screenState);
     // }
 });
-
-
-
