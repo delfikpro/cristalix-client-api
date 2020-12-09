@@ -315,6 +315,8 @@ declare class EntityPlayer extends EntityLivingBase {
     getLuck(): float;
 
     setWearing(part: EnumPlayerModelParts): void;
+
+    getInventory(): InventoryPlayer;
 }
 
 declare abstract class AbstractClientPlayer extends EntityPlayer {
@@ -735,6 +737,13 @@ declare type RenderPassEvent = {
     pass: int,
     partialTicks: float,
 };
+declare type WindowClickEvent = {
+    windowId: int,
+    slotId: int,
+    mouseButton: int,
+    clickType: int,
+    cancelled: boolean,
+};
 
 declare type EventAction = 'chat_send' | 'gui_overlay_render' | 'game_loop' | 'static KEY_press' | 'server_connect' | 'server_switch' | 'overlay_render' | 'game_tick_pre' | 'game_tick_post' | string;
 declare type Listener<T> = (event: T) => void;
@@ -888,6 +897,10 @@ declare class NBTTagEnd extends NBTBase {}
 
 declare class NBTTagList extends NBTBase {
 
+    constructor(array: NBTBase[]);
+
+    constructor(size: int);
+
     constructor();
 
     appendTag(nbt: NBTBase): void;
@@ -912,6 +925,8 @@ declare class NBTTagList extends NBTBase {
 }
 
 declare class NBTTagCompound extends NBTBase {
+
+    constructor(size: int, loadFactor: float);
 
     constructor();
 
@@ -1099,7 +1114,143 @@ declare interface RenderItem {
 }
 declare const renderItem: RenderItem;
 
-declare class Inventory {
+declare interface WorldNameable {
+
+    getName(): string;
+
+    hasCustomName(): boolean;
+
+    getDisplayName(): ITextComponent;
+}
+
+declare interface Inventory extends WorldNameable {
+
+    getSizeInventory(): int;
+
+    isEmpty(): boolean;
+
+    getStackInSlot(slot: int): ItemStack;
+
+    decrStackSize(slot: int, quantity: int): ItemStack;
+
+    removeStackFromSlot(slot: int): ItemStack;
+
+    setInventorySlotContents(slot :int, stack: ItemStack): void;
+
+    getInventoryStackLimit(): int;
+
+    markDirty(): void;
+
+    isUsableByPlayer(player: EntityPlayer): boolean;
+
+    isItemValidForSlot(slot: int, stack: ItemStack): boolean;
+
+    getField(field: int): int;
+
+    setField(field: int, value: int): void;
+
+    getFieldCount(): int;
+
+    clear(): void;
+}
+
+declare interface InventoryBasic extends Inventory{
+
+    addItem(stack: ItemStack): ItemStack;
+}
+
+declare interface InventoryPlayer extends Inventory {
+
+    getCurrentItem(): ItemStack;
+
+    getFirstEmptyStack(): int;
+
+    getSlotFor(stack: ItemStack): int;
+
+    findSlotMatchingUnusedItem(stack: ItemStack): int;
+
+    getBestHotbarSlot(): int;
+
+    armorItemInSlot(slot: int): ItemStack;
+
+    getTimesChanged(): int;
+
+    getItemStack(): ItemStack;
+
+    getActiveSlot(): int;
+}
+
+declare interface InventoryPlayerRemote extends InventoryPlayer {
+
+    setPickedItemStack(stack: ItemStack): void;
+
+    pickItem(slot: int): void;
+
+    changeCurrentItem(slot: int): void;
+
+    clearMatchingItems(item: Item, metadata: int, count: int, tag: NBTTagCompound): int;
+
+    storeItemStack(stack: ItemStack): int;
+
+    addItemStackToInventory(stack: ItemStack): boolean;
+
+    add(preferredSlot: int, stack: ItemStack): boolean;
+
+    deleteStack(stack: ItemStack): void;
+
+    getDestroySpeed(state: IBlockState): float;
+
+    canHarvestBlock(state: IBlockState): boolean;
+
+    dropAllItems(): void;
+
+    setItemStack(itemStack: ItemStack): void;
+
+    copyInventory(inventory: InventoryPlayer): void;
+}
+
+declare class ContainerLocalMenu implements InventoryBasic {
+
+    constructor(type: string, title: ITextComponent, slotsCount: int)
+
+    addItem(stack: ItemStack): ItemStack;
+
+    clear(): void;
+
+    decrStackSize(slot: int, quantity: int): ItemStack;
+
+    getDisplayName(): ITextComponent;
+
+    getField(field: int): int;
+
+    getFieldCount(): int;
+
+    getInventoryStackLimit(): int;
+
+    getName(): string;
+
+    getSizeInventory(): int;
+
+    getStackInSlot(slot: int): ItemStack;
+
+    hasCustomName(): boolean;
+
+    isEmpty(): boolean;
+
+    isItemValidForSlot(slot: int, stack: ItemStack): boolean;
+
+    isUsableByPlayer(player: EntityPlayer): boolean;
+
+    markDirty(): void;
+
+    removeStackFromSlot(slot: int): ItemStack;
+
+    setField(field: int, value: int): void;
+
+    setInventorySlotContents(slot: int, stack: ItemStack): void;
+}
+
+declare class InventoryDeprecated {
 
     static getStackInSlot(slot: int): ItemStack;
 
