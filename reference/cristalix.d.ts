@@ -744,6 +744,9 @@ declare type WindowClickEvent = {
     clickType: int,
     cancelled: boolean,
 };
+declare type CancellableRenderEvent = {
+    cancelled: boolean,
+}l
 
 declare type EventAction = 'chat_send' | 'gui_overlay_render' | 'game_loop' | 'static KEY_press' | 'server_connect' | 'server_switch' | 'overlay_render' | 'game_tick_pre' | 'game_tick_post' | string;
 declare type Listener<T> = (event: T) => void;
