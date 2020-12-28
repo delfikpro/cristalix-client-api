@@ -747,8 +747,12 @@ declare type WindowClickEvent = {
 declare type CancellableRenderEvent = {
     cancelled: boolean,
 };
+declare type MousePressEvent = {
+    readonly key: int,
+    pressed: boolean,
+};
 
-declare type EventAction = 'chat_send' | 'gui_overlay_render' | 'game_loop' | 'static KEY_press' | 'server_connect' | 'server_switch' | 'overlay_render' | 'game_tick_pre' | 'game_tick_post' | 'player_list_render' | 'air_bar_render' | 'hotbar_render' | 'potions_render' | 'exp_render' | 'armor_render' | 'health_render' | 'hunger_render' | string;
+declare type EventAction = 'chat_send' | 'gui_overlay_render' | 'game_loop' | 'static KEY_press' | 'server_connect' | 'server_switch' | 'overlay_render' | 'game_tick_pre' | 'game_tick_post' | 'player_list_render' | 'air_bar_render' | 'hotbar_render' | 'potions_render' | 'exp_render' | 'armor_render' | 'health_render' | 'hunger_render' | 'mouse_press' | string;
 declare type Listener<T> = (event: T) => void;
 
 declare class Events {
