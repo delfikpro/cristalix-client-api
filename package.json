@@ -1,6 +1,6 @@
 {
   "name": "@cristalix/client-api",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "description": "",
   "main": "lib/simple-gui.js",
   "types": "lib/simple-gui.d.ts",
