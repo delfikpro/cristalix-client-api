@@ -16,7 +16,7 @@ const color = GL11.glColor4f;
 var animationsEnabled = true;
 
 export function enableAnimations() {
-    animationsEnabled = false;
+    animationsEnabled = true;
 }
 
 export function disableAnimations() {
