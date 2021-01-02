@@ -1,23 +1,24 @@
 /// <reference path="../reference/cristalix.d.ts" />
 
-import {nbt, int, short} from "./simple-nbt";
+import { nbt, int, short, string } from "./simple-nbt";
 
 export type ItemData = {
-  type: int,
+  type: string,
   metadata: int,
   count: int,
   nbt?: NBTTagCompound,
 };
 
 export function item(data: ItemData): ItemStack {
+  return create(data.type, data.metadata, data.count, data.nbt)
+}
+
+export function create(id: string, data: number, amount: number, tag?: NBTTagCompound) {
   const item = new ItemStack(nbt({
-    id: int(data.type),
-    Damage: short(data.metadata),
-    Count: int(data.count),
+    id: string(id),
+    Damage: short(data),
+    Count: int(amount),
   }));
-  const $nbt = data.nbt;
-  if ($nbt) {
-    item.setTagCompound($nbt);
-  }
+  if (tag) item.setTagCompound(tag);
   return item;
 }
