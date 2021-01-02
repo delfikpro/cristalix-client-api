@@ -7,6 +7,45 @@ declare type char = number;
 declare type short = number;
 declare type byte = number;
 
+declare class NativeRuntime {
+
+  static iterateArray(array: any[], consumer: (value: any) => void): void;
+
+  static iterateIntArray(array: int[], consumer: (value: int) => void): void;
+
+  static iterateDoubleArray(array: double[], consumer: (value: double) => void): void;
+
+  static fillArrayAll(array: any[], o: any): void;
+
+  static fillIntArrayAll(array: int[], o: int): void;
+
+  static fillDoubleArrayAll(array: double[], o: double): void;
+
+  static fillArray(array: any[], from: int, to: int, o: any): void;
+
+  static fillIntArray(array: int[], from: int, to: int, o: int): void;
+
+  static fillDoubleArray(array: double[], from: int, to: int, o: double): void;
+
+  static fillArrayIndexed(array: any[], fun: (idx: int) => any): void;
+
+  static fillIntArrayIndexed(array: int[], fun: (idx: int) => int): void;
+
+  static fillDoubleArrayIndexed(array: double[], fun: (idx: int) => double): void;
+
+  static pushUpto(array: any[], to: int, fun: (idx: int) => any): void;
+
+  static pushUptoInt(array: int[], to: int, fun: (idx: int) => int): void;
+
+  static pushUptoDouble(array: double[], to: int, fun: (idx: int) => double): void;
+
+  static sin(value: float): float;
+
+  static cos(value: float): float;
+
+  static fastInvSqrt(value: double): double;
+}
+
 declare interface Closeable {
 
     close(): void;
