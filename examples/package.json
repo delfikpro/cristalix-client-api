@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@cristalix/bundler": "^1.0.8",
-    "@cristalix/client-api": "^2.0.14"
+    "@cristalix/bundler": "^1.1.7",
+    "@cristalix/client-api": "^2.1.7"
   }
 }
