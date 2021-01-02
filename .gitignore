@@ -3,3 +3,4 @@ dist/
 src1/
 .vscode/
 lib/
+*.bundle.js

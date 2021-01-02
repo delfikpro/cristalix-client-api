@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const webpack = require('webpack');
 const process = require('process');
-const moduleName = process.env.CRISTALIX_JSC_NAME || 'clientcode'
+const moduleName = process.env.CRISTALIX_BUNDLER_MODULE_NAME || 'clientcode'
 console.log("\x1B[33;1mSetting up workspace for module '" + moduleName + "'...\x1B[0m ");
 if (!/^[A-Za-z0-9_-]+$/.test(moduleName)) throw new Error("Invalid MODULE_NAME: " + moduleName);
 
