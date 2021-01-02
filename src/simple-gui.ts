@@ -500,7 +500,7 @@ export class Item extends Element {
         RenderHelper.enableGUIStandardItemLighting();
         // GL11.glTranslatef(0, 0, +100);
         super.prepare(time, parentWidth, parentHeight, 16, 16);
-        Draw.renderItemAndEffectIntoGUI(this.item, this.x.value, this.y.value);
+        Draw.renderItemAndEffectIntoGUI(this.item, 0, 0);
         RenderHelper.disableStandardItemLighting();
         popMatrix();
 
