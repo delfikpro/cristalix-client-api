@@ -107,28 +107,28 @@ declare class ChunkProvider {
     getLoadedChunk(x: int, z: int): Chunk;
 
     provideChunk(x: int, z: int): Chunk;
-  
+
     tick(): boolean;
-  
+
     makeString(): string;
-  
+
     isChunkGeneratedAt(x: int, z: int): boolean;
-  
+
     load(x: int, z: int): Chunk;
-  
+
     unload(x: int, z: int): void;
-  
+
     put(chunk: Chunk): void;
 }
 
 declare class Block {
 
     static getIdFromBlock(block: Block): number;
-    
+
     static getStateId(state: IBlockState): number;
-    
+
     static getBlockById(id: number): Block;
-    
+
     static getStateById(id: number): IBlockState;
 }
 
@@ -144,17 +144,17 @@ declare class EntityArmorStand extends EntityLivingBase {
     setSmall(value: boolean): void;
 
     isSmall(): boolean;
-  
+
     setShowArms(value: boolean): void;
-  
+
     getShowArms(): boolean;
-  
+
     setNoBasePlate(value: boolean): void;
-  
+
     hasNoBasePlate(): boolean;
-  
+
     setMarker(value: boolean): void;
-  
+
     hasMarker(): boolean;
 
 }
@@ -164,75 +164,75 @@ declare class Chunk {
     getHeight(pos: BlockPos): number;
 
     getHeightValue(x: int, z: int): number;
-  
+
     getTopFilledSegment(): number;
-  
+
     // getBlockStorageArray(): ExtendedBlockStorage[];
-  
+
     generateSkylightMap(): void;
-  
+
     getBlockState(x: int, y: int, z: int): IBlockState;
-  
+
     setBlockState(pos: BlockPos, state: IBlockState): IBlockState;
-  
+
     // getLightFor(p_getLightFor_1_: EnumSkyBlock, x: number, y: number, z: number): number;
-  
+
     // setLightFor(p_setLightFor_1_: EnumSkyBlock, x: number, y: number, z: number, dflt: number): void;
-  
+
     getLightSubtracted(x: int, y: int, z: int, dflt: int): number;
-  
+
     canSeeSky(x: int, y: int, z: int): boolean;
-  
+
     isEmpty(): boolean;
-  
+
     getPrecipitationHeightY(x: int, z: int): int;
-  
+
     isPopulated(): boolean;
-  
+
     wasTicked(): boolean;
-  
+
     isEmptyBetween(x: int, z: int): boolean;
-  
+
     // setStorageArrays(arrays: ExtendedBlockStorage[]): void;
-  
+
     // read(buffer: PacketBuffer, extractedSize: number, full: boolean): void;
-  
+
     // getBiome(x: number, z: number, provider: BiomeProvider): Biome;
-  
+
     getBiomeArray(): byte[];
-  
+
     setBiomeArray(biomeArray: byte[]): void;
-  
+
     resetRelightChecks(): void;
-  
+
     enqueueRelightChecks(): void;
-  
+
     checkLight(): void;
-  
+
     isLoaded(): boolean;
-  
+
     markLoaded(loaded: boolean): void;
-  
+
     getWorld(): World;
-  
+
     getHeightMap(): byte[];
-  
+
     setHeightMap(heightMap: byte[]): void;
-  
+
     isTerrainPopulated(): boolean;
-  
+
     setTerrainPopulated(terrainPopulated: boolean): void;
-  
+
     isLightPopulated(): boolean;
-  
+
     setLightPopulated(lightPopulated: boolean): void;
-  
+
     getLowestHeight(): int;
-  
+
     getX(): int;
-  
+
     getZ(): int;
-  
+
     getKey(): long;
 }
 
@@ -392,7 +392,7 @@ declare class EntityLivingBase extends Entity {
 
     getHeldItemOffhand(): ItemStack;
 
-    getItemStackFromSlot(slot:EntityEquipmentSlot): ItemStack;
+    getItemStackFromSlot(slot: EntityEquipmentSlot): ItemStack;
 
     isHandActive(): boolean;
 
@@ -440,7 +440,7 @@ declare class EntityLivingBase extends Entity {
 
     jump(): void;
 
-    travel(x: float, y: float,  z: float): void;
+    travel(x: float, y: float, z: float): void;
 
     getAIMoveSpeed(): float;
 
@@ -481,7 +481,7 @@ declare class ByteBuf {
     readInt(): int;
 
     readVarInt(): int;
-    
+
     readLong(): long;
 
     readDouble(): double;
@@ -493,7 +493,7 @@ declare class ByteBuf {
     writeFloat(value: float): ByteBuf;
 
     resetReaderIndex(): void;
-    
+
     resetWriterIndex(): void;
 }
 
@@ -557,6 +557,251 @@ declare class Display {
     static getHeight(): int;
 }
 
+declare class GLAllocation {
+    static createDirectByteBuffer(capacity: number): ByteBuffer;
+    static createDirectFloatBuffer(capacity: number): FloatBuffer;
+    // static createDirectIntBuffer(int capacity): IntBuffer;
+    static deleteDisplayLists(list: number): void;
+    static deleteDisplayLists(list: number, range: number): void;
+    static generateDisplayLists(range: number): int;
+    static freeBuffer(buffer: FloatBuffer): void;
+}
+
+declare class Vector {
+
+    length(): number;
+
+    lengthSquared(): number;
+
+    load(buf: FloatBuffer): Vector;
+
+    negate(): Vector;
+
+    normalise(): Vector;
+
+    scale(scale: number): Vector;
+
+    store(buf: FloatBuffer): Vector;
+
+}
+
+declare class Vector2f extends Vector {
+    static add(left: Vector2f, right: Vector2f, dest: Vector2f): Vector2f;
+
+    static angle(a: Vector2f, b: Vector2f): number;
+
+    static dot(left: Vector2f, right: Vector2f): number;
+
+    constructor();
+
+    constructor(x: number, y: number);
+
+    equals(obj: any): boolean;
+
+    getX(): number;
+
+    getY(): number;
+
+    lengthSquared(): number;
+
+    load(buf: FloatBuffer): Vector;
+
+    negate(): Vector;
+
+    negate(dest: Vector2f): Vector2f;
+
+    normalise(dest?: Vector2f): Vector2f;
+
+    scale(scale: number): Vector;
+
+    set(x: number, y: number): void;
+
+    // set(src: ReadableVector2f): Vector2f;
+
+    setX(x: number): void;
+
+    setY(y: number): void;
+
+    store(buf: FloatBuffer): Vector;
+
+    static sub(left: Vector2f, right: Vector2f, dest: Vector2f): Vector2f;
+
+    toString(): string;
+
+    translate(x: number, y: number): Vector2f;
+}
+
+declare class Vector3f extends Vector {
+
+    static add(left: Vector3f, right: Vector3f, dest: Vector3f): Vector3f;
+
+    static angle(a: Vector3f, b: Vector3f): number;
+
+    static cross(left: Vector3f, right: Vector3f, dest: Vector3f): Vector3f;
+
+    static dot(left: Vector3f, right: Vector3f): number;
+
+    constructor();
+
+    constructor(x: number, y: number, z: number);
+
+    equals(obj: any): boolean;
+
+    getX(): number;
+
+    getY(): number;
+
+    getZ(): number;
+
+    lengthSquared(): number;
+
+    load(buf: FloatBuffer): Vector;
+
+    negate(): Vector;
+
+    negate(dest: Vector3f): Vector3f;
+
+    normalise(dest?: Vector3f): Vector3f;
+
+    scale(scale: number): Vector;
+
+    set(x: number, y: number): void;
+
+    set(x: number, y: number, z: number): void;
+
+    // set(src: ReadableVector3f): Vector3f;
+
+    setX(x: number): void;
+
+    setY(y: number): void;
+
+    setZ(z: number): void;
+
+    store(buf: FloatBuffer): Vector;
+
+    static sub(left: Vector3f, right: Vector3f, dest: Vector3f): Vector3f;
+
+    toString(): string;
+
+    translate(x: number, y: number, z: number): Vector3f;
+
+}
+
+declare class Vector4f extends Vector {
+
+    static add(left: Vector4f, right: Vector4f, dest: Vector4f): Vector4f;
+
+    static angle(a: Vector4f, b: Vector4f): number;
+
+    static dot(left: Vector4f, right: Vector4f): number;
+
+    constructor();
+
+    constructor(w: number, x: number, y: number, z: number);
+
+    equals(obj: any): boolean;
+
+    getW(): number;
+
+    getX(): number;
+
+    getY(): number;
+
+    getZ(): number;
+
+    lengthSquared(): number;
+
+    load(buf: FloatBuffer): Vector;
+
+    negate(): Vector;
+
+    negate(dest: Vector4f): Vector4f;
+
+    normalise(dest?: Vector4f): Vector4f;
+
+    scale(scale: number): Vector;
+
+    set(x: number, y: number): void;
+
+    set(x: number, y: number, z: number): void;
+
+    set(x: number, y: number, z: number, w: number): void;
+
+    // set(src: ReadableVector4f): Vector4f;
+
+    setW(w: number): void;
+
+    setX(x: number): void;
+
+    setY(y: number): void;
+
+    setZ(z: number): void;
+
+    store(buf: FloatBuffer): Vector;
+
+    static sub(left: Vector4f, right: Vector4f, dest: Vector4f): Vector4f;
+
+    toString(): string;
+
+    translate(x: number, y: number, z: number, w: number): Vector4f;
+
+}
+
+
+declare class Matrix {
+    determinant(): float;
+    invert(): Matrix;
+    load(buf: FloatBuffer): Matrix;
+    loadTranspose(buf: FloatBuffer): Matrix;
+    negate(): Matrix;
+    setIdentity(): Matrix;
+    setZero(): Matrix;
+    store(buf: FloatBuffer): Matrix;
+    storeTranspose(buf: FloatBuffer): Matrix;
+    transpose(): Matrix;
+}
+
+declare class Matrix4f extends Matrix {
+
+    static add(left: Matrix4f, right: Matrix4f, dest: Matrix4f): Matrix4f;
+    static invert(src: Matrix4f, dest: Matrix4f): Matrix4f;
+    static load(src: Matrix4f, dest: Matrix4f): Matrix4f;
+    static mul(left: Matrix4f, right: Matrix4f, dest: Matrix4f): Matrix4f;
+    static negate(src: Matrix4f, dest: Matrix4f): Matrix4f;
+    static rotate(angle: float, axis: Vector3f, src: Matrix4f, dest: Matrix4f): Matrix4f;
+    static scale(vec: Vector3f, src: Matrix4f, dest: Matrix4f): Matrix4f;
+    static setIdentity(m: Matrix4f): Matrix4f;
+    static setZero(m: Matrix4f): Matrix4f;
+    static sub(left: Matrix4f, right: Matrix4f, dest: Matrix4f): Matrix4f;
+    static transform(left: Matrix4f, right: Vector4f, dest: Vector4f): Vector4f;
+    static translate(vec: Vector2f, src: Matrix4f, dest: Matrix4f): Matrix4f;
+    static translate(vec: Vector3f, src: Matrix4f, dest: Matrix4f): Matrix4f;
+    static transpose(src: Matrix4f, dest: Matrix4f): Matrix4f;
+
+    determinant(): float;
+    invert(): Matrix;
+    load(buf: FloatBuffer): Matrix;
+    load(src: Matrix4f): Matrix4f;
+    loadTranspose(buf: FloatBuffer): Matrix;
+    negate(): Matrix;
+    negate(dest: Matrix4f): Matrix4f;
+    rotate(angle: float, axis: Vector3f): Matrix4f;
+    rotate(angle: float, axis: Vector3f, dest: Matrix4f): Matrix4f;
+    scale(vec: Vector3f): Matrix4f;
+    setIdentity(): Matrix4f;
+    setZero(): Matrix;
+    store(buf: FloatBuffer): Matrix;
+    store3f(buf: FloatBuffer): Matrix;
+    storeTranspose(buf: FloatBuffer): Matrix;
+    toString(): string;
+    translate(vec: Vector2f): Matrix4f;
+    translate(vec: Vector2f, dest: Matrix4f): Matrix4f;
+    translate(vec: Vector3f): Matrix4f;
+    translate(vec: Vector3f, dest: Matrix4f): Matrix4f;
+    transpose(): Matrix;
+    transpose(dest: Matrix4f): Matrix4f;
+}
+
 declare class GL11 {
 
     static GL_LIGHT0: int;
@@ -591,7 +836,7 @@ declare class GL11 {
     static GL_ONE_MINUS_CONSTANT_ALPHA: int;
     static GL_COLOR_BUFFER_BIT: int;
     static GL_TEXTURE_2D: int;
-    
+
     static glTranslatef(x: float, y: float, z: float): void;
 
     static glPolygonOffset(factor: float, units: float): void;
@@ -605,6 +850,8 @@ declare class GL11 {
     static glPushMatrix(): void;
 
     static glPopMatrix(): void;
+
+    static glMultMatrixf(matrix: FloatBuffer): void;
 
     static glPushAttrib(attrib: int): void;
 
@@ -657,11 +904,11 @@ declare class GlStateManager {
     static enableDepth(): void;
 
     static disableLight(par1: int): void;
-    
+
     static disableColorMaterial(): void;
 
     static enableLight(par1: int): void;
-    
+
     static enableColorMaterial(): void;
 
     static colorMaterial(par1: int, par2: int): void;
@@ -705,7 +952,7 @@ declare class Draw {
 
     static drawSplitString(text: string, x: int, y: int, wrapWidth: int, textColor?: int): void;
 
-    static drawScaledCustomSizeModalRect(x: int, y: int, u: int, v: int, uWidth: int, vHeight: int, width: int, height: int, tileWidth : int, tileHeight: int): void;
+    static drawScaledCustomSizeModalRect(x: int, y: int, u: int, v: int, uWidth: int, vHeight: int, width: int, height: int, tileWidth: int, tileHeight: int): void;
 
     static getResolution(): ScaledResolution;
 
@@ -784,7 +1031,7 @@ declare type GameType = 'NOT_SET' | 'SURVIVAL' | 'CREATIVE' | 'ADVENTURE' | 'SPE
 
 declare const plugin: any;
 
-declare class Item {}
+declare class Item { }
 
 declare abstract class NBTBase {
     getId(): byte;
@@ -900,7 +1147,7 @@ declare class NBTTagLongArray extends NBTBase {
     copy(): NBTTagLongArray;
 }
 
-declare class NBTTagEnd extends NBTBase {}
+declare class NBTTagEnd extends NBTBase { }
 
 declare class NBTTagList extends NBTBase {
 
@@ -1012,108 +1259,108 @@ declare class CompressedStreamTools {
 
 declare class ItemStack {
 
-  constructor(block: Block);
+    constructor(block: Block);
 
-  constructor(block: Block, count: int);
+    constructor(block: Block, count: int);
 
-  constructor(block: Block, count: int, meta: int);
+    constructor(block: Block, count: int, meta: int);
 
-  constructor(item: Item);
+    constructor(item: Item);
 
-  constructor(item: Item, count: int);
+    constructor(item: Item, count: int);
 
-  constructor(item: Item, count: int, meta: int);
+    constructor(item: Item, count: int, meta: int);
 
-  constructor(nbt: NBTTagCompound);
+    constructor(nbt: NBTTagCompound);
 
-  isEmpty(): boolean;
+    isEmpty(): boolean;
 
-  splitStack(amount: int): ItemStack;
+    splitStack(amount: int): ItemStack;
 
-  getItem(): Item;
+    getItem(): Item;
 
-  getDestroySpeed(block: IBlockState): int;
+    getDestroySpeed(block: IBlockState): int;
 
-  getMaxStackSize(): int;
+    getMaxStackSize(): int;
 
-  isStackable(): boolean;
+    isStackable(): boolean;
 
-  isItemStackDamageable(): boolean;
+    isItemStackDamageable(): boolean;
 
-  isItemDamaged(): boolean;
+    isItemDamaged(): boolean;
 
-  getItemDamage(): int;
+    getItemDamage(): int;
 
-  getMetadata(): int;
+    getMetadata(): int;
 
-  setItemDamage(meta: int): void;
+    setItemDamage(meta: int): void;
 
-  getMaxDamage(): int;
+    getMaxDamage(): int;
 
-  copy(): ItemStack;
+    copy(): ItemStack;
 
-  isItemEqual(other: ItemStack): boolean;
+    isItemEqual(other: ItemStack): boolean;
 
-  isItemEqualIgnoreDurability(other: ItemStack): boolean;
+    isItemEqualIgnoreDurability(other: ItemStack): boolean;
 
-  getTranslationKey(): string;
+    getTranslationKey(): string;
 
-  getTagCompound(): NBTTagCompound;
+    getTagCompound(): NBTTagCompound;
 
-  getOrCreateSubCompound(key: string): NBTTagCompound;
+    getOrCreateSubCompound(key: string): NBTTagCompound;
 
-  getSubCompound(key: string): NBTTagCompound | null;
+    getSubCompound(key: string): NBTTagCompound | null;
 
-  removeSubCompound(key: string): void;
+    removeSubCompound(key: string): void;
 
-  getEnchantmentTagList(): NBTTagList;
+    getEnchantmentTagList(): NBTTagList;
 
-  setTagCompound(nbt: NBTTagCompound): void;
+    setTagCompound(nbt: NBTTagCompound): void;
 
-  getDisplayName(): string;
+    getDisplayName(): string;
 
-  setTranslatableName(name: string): ItemStack;
+    setTranslatableName(name: string): ItemStack;
 
-  setStackDisplayName(name: string): ItemStack;
+    setStackDisplayName(name: string): ItemStack;
 
-  clearCustomName(): void;
+    clearCustomName(): void;
 
-  hasDisplayName(): boolean;
+    hasDisplayName(): boolean;
 
-  hasEffect(): boolean;
+    hasEffect(): boolean;
 
-  isItemEnchantable(): boolean;
+    isItemEnchantable(): boolean;
 
-  isItemEnchanted(): boolean;
+    isItemEnchanted(): boolean;
 
-  setTagInfo(key: string, value: NBTBase): void;
+    setTagInfo(key: string, value: NBTBase): void;
 
-  canEditBooks(): boolean;
+    canEditBooks(): boolean;
 
-  getRepairCost(): int;
+    getRepairCost(): int;
 
-  getTextComponent(): ITextComponent;
+    getTextComponent(): ITextComponent;
 
-  getCount(): int;
+    getCount(): int;
 
-  setCount(count: int): void;
+    setCount(count: int): void;
 
-  grow(quantity: int): void;
+    grow(quantity: int): void;
 
-  shrink(quantity: int): void;
+    shrink(quantity: int): void;
 
-  static areItemStackTagsEqual(stackA: ItemStack, stackB: ItemStack): boolean;
+    static areItemStackTagsEqual(stackA: ItemStack, stackB: ItemStack): boolean;
 
-  static areItemStacksEqual(stackA: ItemStack, stackB: ItemStack): boolean;
+    static areItemStacksEqual(stackA: ItemStack, stackB: ItemStack): boolean;
 
-  static areItemsEqual(stackA: ItemStack, stackB: ItemStack): boolean;
+    static areItemsEqual(stackA: ItemStack, stackB: ItemStack): boolean;
 
-  static areItemsEqualIgnoreDurability(stackA: ItemStack, stackB: ItemStack): boolean;
+    static areItemsEqualIgnoreDurability(stackA: ItemStack, stackB: ItemStack): boolean;
 }
 
 declare interface RenderItem {
 
-    renderItemIntoGUI(stack: ItemStack, x: int, y:  int): void;
+    renderItemIntoGUI(stack: ItemStack, x: int, y: int): void;
 
     renderItemAndEffectIntoGUI(stack: ItemStack, x: int, y: int): void;
 
@@ -1142,7 +1389,7 @@ declare interface Inventory extends WorldNameable {
 
     removeStackFromSlot(slot: int): ItemStack;
 
-    setInventorySlotContents(slot :int, stack: ItemStack): void;
+    setInventorySlotContents(slot: int, stack: ItemStack): void;
 
     getInventoryStackLimit(): int;
 
@@ -1161,7 +1408,7 @@ declare interface Inventory extends WorldNameable {
     clear(): void;
 }
 
-declare interface InventoryBasic extends Inventory{
+declare interface InventoryBasic extends Inventory {
 
     addItem(stack: ItemStack): ItemStack;
 }
@@ -1392,7 +1639,7 @@ declare class Keyboard {
     static KEY_RMENU: int; /* right Alt */
     static KEY_FUNCTION: int; /* Function (Mac) */
     static KEY_PAUSE: int; /* Pause */
-    static KEY_HOME : int; /* Home on arrow keypad */
+    static KEY_HOME: int; /* Home on arrow keypad */
     static KEY_UP: int; /* UpArrow on arrow keypad */
     static KEY_PRIOR: int; /* PgUp on arrow keypad */
     static KEY_LEFT: int; /* LeftArrow on arrow keypad */
@@ -1481,7 +1728,7 @@ declare class Mouse {
 declare class BlockPos {
 
     getX(): int;
-    
+
     getY(): int;
 
     getZ(): int;
@@ -1526,37 +1773,37 @@ declare class World {
 
     // RayTraceResult rayTraceBlocks(Vec3d start, Vec3d end, boolean stopOnLiquid,
     //     boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock);
-  
+
     spawnEntity(entity: Entity): boolean;
-  
+
     removeEntity(entity: Entity): void;
-  
+
     getThunderStrength(p_getThunderStrength_1_: float): float;
-  
+
     setThunderStrength(p_setThunderStrength_1_: float): void;
-  
+
     getRainStrength(p_getRainStrength_1_: float): float;
-  
+
     setRainStrength(p_setRainStrength_1_: float): void;
-  
+
     setBlockState(pos: BlockPos, state: IBlockState, flag: int): boolean;
-  
+
     setBlockToAir(p_setBlockToAir_1_: BlockPos): boolean;
-  
+
     destroyBlock(p_destroyBlock_1_: BlockPos, p_destroyBlock_2_: boolean): boolean;
-  
+
     getBlockState(p_getBlockState_1_: int, p_getBlockState_2_: int, p_getBlockState_3_: int): IBlockState;
-  
+
     getChunkProvider(): ChunkProvider;
-  
+
     markBlockRangeForRenderUpdate(p1: int, p2: int, p3: int, p4: int, p5: int, p6: int): void;
-  
+
     makeFireworks(x: double, y: double, z: double, motionX: double, motionY: double, motionZ: double, data: NBTTagCompound): void;
-  
+
     setChunkProvider(chunkProvider: ChunkProvider): void;
-  
+
     // void spawnParticle(EnumParticleTypes types, boolean isLongDistance, double x, double y, double z,
-        // double motionX, double motionY, double motionZ, int... data);
+    // double motionX, double motionY, double motionZ, int... data);
 
 }
 
@@ -1698,7 +1945,7 @@ declare interface Minecraft {
 
     getFontRenderer(): FontRenderer;
 
-    getGalacticFontRenderer():  FontRenderer;
+    getGalacticFontRenderer(): FontRenderer;
 
     getRenderItem(): RenderItem;
 
@@ -1731,11 +1978,11 @@ declare class Vec3d {
 
 declare class ProfileTexture {
 
-    constructor(url: string, metadata: {[key: string]: string});
+    constructor(url: string, metadata: { [key: string]: string });
 }
 
 declare enum ProfileTextureType {
-    
+
     SKIN = 'SKIN',
     CAPE = 'CAPE',
     ELYTRA = 'ELYTRA',
@@ -1777,7 +2024,7 @@ declare class FontRenderer {
 
     getCharWidth(char: char): int;
 
-    trimStringToWidth(text: string, width: int, reverse: boolean) : string;
+    trimStringToWidth(text: string, width: int, reverse: boolean): string;
 
     drawSplitString(text: string, x: int, y: int, wrapWidth: int, color: int): void;
 
@@ -1802,7 +2049,7 @@ declare class KeyBinding {
 
     getKeyCode(): int;
 }
-declare const keybinds: {[key: string]: KeyBinding};
+declare const keybinds: { [key: string]: KeyBinding };
 
 declare class Entity {
 
@@ -1973,7 +2220,7 @@ declare class UUID {
 
     static fromString(string: string): UUID;
 
-    static randomUUID():UUID;
+    static randomUUID(): UUID;
 }
 
 // export {

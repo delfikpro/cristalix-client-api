@@ -62,9 +62,8 @@ export function number(v: number): NBTPrimitive {
 }
 
 export function nbt(data: NbtData): NBTTagCompound {
-  const keys = Object.keys(data);
-  const result = new NBTTagCompound(keys.length, 1);
-  for (const key of keys) {
+  const result = new NBTTagCompound();
+  for (const key in data) {
     result.setTag(key, data[key] as NBTBase);
   }
   return result;
