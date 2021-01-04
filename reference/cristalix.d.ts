@@ -44,6 +44,9 @@ declare class NativeRuntime {
   static cos(value: float): float;
 
   static fastInvSqrt(value: double): double;
+
+  static ease(value: number, easingId: number): number;
+
 }
 
 declare interface Closeable {

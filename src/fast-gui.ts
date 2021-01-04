@@ -26,52 +26,54 @@ export type Callback = () => void;
 
 export class Animation {
 
-    started: number = 0;
+    startedTime: number = 0;
     duration: number = 0;
-    fromValue: number = 0;
-    toValue: number = 0;
+    startValue: number = 0;
+    targetValue: number = 0;
     easingId: number = 0;
+    lastValue: number;
 
-    constructor(public value: number) {
-        this.toValue = value;
+    constructor(
+        public readonly element: Element,
+        public readonly propertyId: number,
+    ) {
+        this.targetValue = this.lastValue = element.properties[propertyId];
     }
 
-    public animate(value: number, duration: number, easingId: number): void {
+    public newTarget(value: number, duration: number, easingId: number): void {
 
-        this.fromValue = this.value;
-        this.toValue = value;
-        this.started = getTime();
+        this.startValue = this.lastValue;
+        this.targetValue = value;
+        this.startedTime = getTime();
         this.duration = duration;
         this.easingId = easingId;
 
     }
 
-    public update(time: number): void {
-        if (!this.started) return;
-        let part = (time - this.started) / this.duration;
-        if (part > 1.0) {
-            this.value = this.toValue;
-            this.started = 0.0;
+    public update(time: number): boolean {
+        // if (!this.startedTime) return NaN;
+        let part = (time - this.startedTime) / this.duration;
+        let alive = part <= 1.0;
+        let value: number;
+        if (alive) {
+            let easingId = this.easingId;
+            if (easingId) part = NativeRuntime.ease(part, easingId);
+            let startValue = this.startValue;
+            value = startValue + (this.targetValue - startValue) * part;
         } else {
-            part = NativeRuntime.ease(part);
-            this.value = this.fromValue + (this.toValue - this.fromValue) * part;
+            this.startedTime = 0.0;
+            value = this.targetValue;
         }
+        this.lastValue = value;
+        this.element.setProperty(this.propertyId, value);
+        return alive;
     }
 
 }
 
-
-
-export type Matrix4x4 = [
-    number, number, number, number,
-    number, number, number, number,
-    number, number, number, number,
-    number, number, number, number,
-]
-
-export type V2 = {x?: number, y?: number};
-export type V3 = V2 & {z?: number};
-export type Rotation = V3 & {angle: number};
+export type V2 = { x?: number, y?: number };
+export type V3 = V2 & { z?: number };
+export type Rotation = V3 & { angle: number };
 
 export type Texture = {
     resource: string,
@@ -140,41 +142,6 @@ export function getTime(): number {
 export type MouseHandler = (screenState: ScreenState) => void;
 
 
-// export type ElementData = {
-//     readonly x?: number;
-//     readonly y?: number;
-//     readonly z?: number;
-//     readonly color?: Color;
-//     readonly scale?: number;
-//     readonly align?: vecmath.V2;
-//     readonly origin?: vecmath.V2;
-//     readonly rotationX?: number;
-//     readonly rotationY?: number;
-//     readonly rotationZ?: number;
-//     readonly enabled?: boolean;
-//     readonly noDepth?: boolean;
-// }
-
-// export type BoxData = {
-//     readonly width?: number;
-//     readonly height?: number;
-//     readonly uMin?: number;
-//     readonly vMin?: number;
-//     readonly uDelta?: number;
-//     readonly vDelta?: number;
-//     readonly textureWidth?: number;
-//     readonly textureHeight?: number;
-//     readonly children?: Element[];
-//     readonly texture?: string | ResourceLocation;
-//     readonly onLeftClick?: MouseHandler;
-//     readonly onRightClick?: MouseHandler;
-//     readonly temp_magic?: boolean;
-//     readonly afterRender?: () => void;
-//     readonly beforeRender?: () => void;
-//     readonly onHover?: (screenState: ScreenState, hovered: boolean) => void;
-// } & ElementData
-
-
 export type ItemData = {
     readonly item: ItemStack
 } & ElementData
@@ -194,26 +161,49 @@ export type ScreenState = {
     mouseX: number;
     mouseY: number;
     time: number;
-    stackX: number;
-    stackY: number;
-    stackScale: number;
     leftClick: boolean;
     rightClick: boolean;
 }
 
-var runningAnimations = Animatable
+var runningAnimations: Animation[] = [];
+
+function updateAnimations() {
+    let time = getTime();
+    let newRunningAnimations: Animation[] = [];
+    for (let animation of runningAnimations) {
+        if (animation.update(time)) newRunningAnimations.push(animation);
+    }
+    for (let animation of runningAnimations) {
+        let element = animation.element;
+        let dirty = element.dirtyMatrices;
+        if (!dirty || !dirty.length) continue;
+        for (let dirtyMatrixId of dirty) {
+            if (dirtyMatrixId == -2) continue;
+            element.updateMatrix(dirtyMatrixId);
+        }
+        element.dirtyMatrices = null;
+    }
+    runningAnimations = newRunningAnimations
+}
+
+function updateClickables(ss: ScreenState) {
+
+    overlay.
+
+}
 
 export abstract class Element {
 
     properties: number[];
     matrices: Matrix4f[];
     enabled: boolean;
+    dirtyMatrices: number[];
     beforeRender?: () => void;
     afterRender?: () => void;
 
     constructor(data: ElementData) {
-        
-        let {offset, scale, align, origin, rotation, enabled} = data;
+
+        let { offset, scale, align, origin, rotation, enabled } = data;
 
         this.enabled = enabled == null ? true : enabled;
 
@@ -264,57 +254,127 @@ export abstract class Element {
     }
 
     public setOffset(offset: V3, duration?: number, easingId?: number): void {
-        
+        let x = offset.x;
+        let y = offset.y;
+        let z = offset.z;
+        if (x !== undefined) this.setProperty(index.offsetX, x, duration, easingId);
+        if (y !== undefined) this.setProperty(index.offsetY, y, duration, easingId);
+        if (z !== undefined) this.setProperty(index.offsetZ, z, duration, easingId);
+    }
+
+    public setAlign(align: V3, duration?: number, easingId?: number): void {
+        let x = align.x;
+        let y = align.y;
+        let z = align.z;
+        if (x !== undefined) this.setProperty(index.alignX, x, duration, easingId);
+        if (y !== undefined) this.setProperty(index.alignY, y, duration, easingId);
+        if (z !== undefined) this.setProperty(index.alignZ, z, duration, easingId);
+    }
+
+    public setOrigin(origin: V3, duration?: number, easingId?: number): void {
+        let x = origin.x;
+        let y = origin.y;
+        let z = origin.z;
+        if (x !== undefined) this.setProperty(index.originX, x, duration, easingId);
+        if (y !== undefined) this.setProperty(index.originY, y, duration, easingId);
+        if (z !== undefined) this.setProperty(index.originZ, z, duration, easingId);
+    }
+
+    public setScale(scale: V3, duration?: number, easingId?: number): void {
+        let x = scale.x;
+        let y = scale.y;
+        let z = scale.z;
+        if (x !== undefined) this.setProperty(index.scaleX, x, duration, easingId);
+        if (y !== undefined) this.setProperty(index.scaleY, y, duration, easingId);
+        if (z !== undefined) this.setProperty(index.scaleZ, z, duration, easingId);
+    }
+
+    public setRotation(rotation: Rotation, duration?: number, easingId?: number): void {
+        let x = rotation.x;
+        let y = rotation.y;
+        let z = rotation.z;
+        let angle = rotation.angle;
+        if (angle !== undefined) this.setProperty(index.rotationAngle, angle, duration, easingId);
+        if (x !== undefined) this.setProperty(index.rotationX, x, duration, easingId);
+        if (y !== undefined) this.setProperty(index.rotationY, y, duration, easingId);
+        if (z !== undefined) this.setProperty(index.rotationZ, z, duration, easingId);
     }
 
     public setProperty(propertyId: number, value: number, duration?: number, easingId?: number): void {
-        if (!duration) {
-            this.properties[propertyId] = value;
+        if (duration) {
+            let animation: Animation;
+            for (let existing of runningAnimations) {
+                if (existing.element === this && existing.propertyId === propertyId) {
+                    animation = existing;
+                    break;
+                }
+            }
+            if (!animation) animation = new Animation(this, propertyId);
+            animation.newTarget(value, duration, easingId);
+            runningAnimations.push(animation);
             return;
         }
-        
-    }
-
-    public prepare(time: number, parentWidth: number, parentHeight: number, elementWidth: number, elementHeight: number): void {
-        if (!this.enabled) return;
-
-        this.prepareAlign(parentWidth, parentHeight);
-        this.prepareRotation();
-        this.prepareOffset();
-        this.prepareScale();
-        this.prepareOrigin(elementWidth, elementHeight);
-        this.lastColor = colorParts2Hex(this.a.value, this.r.value, this.g.value, this.b.value);
-        
-    }
-
-    public updateAnimatables(time: number) {
-        var animatables = this.animatables;
-        for (var i = 0; i < animatables.length; i++) {
-            var animatable = animatables[i];
-            if (animatable.started) animatable.update(time);
+        this.properties[propertyId] = value;
+        let influence = index.matrixInfluence[propertyId];
+        if (influence.length) {
+            this.markDirty(influence);
         }
     }
 
-    public prepareAlign(parentWidth: number, parentHeight: number) {
-        if (this.alignX.value || this.alignY.value) translate(parentWidth * this.alignX.value, parentHeight * this.alignY.value, 0)
+    public markDirty(matrixIds: number[]) {
+        if (!this.dirtyMatrices) this.dirtyMatrices = [];
+        loop: for (let matrixId of matrixIds) {
+            for (let dirtyMatrix of this.dirtyMatrices) {
+                if (dirtyMatrix == matrixId) continue loop;
+            }
+            this.dirtyMatrices.push(matrixId);
+        }
     }
 
-    public prepareRotation() {
-        if (this.rotationX.value) rotate(this.rotationX.value, 1, 0, 0);
-        if (this.rotationY.value) rotate(this.rotationY.value, 0, 1, 0);
-        if (this.rotationZ.value) rotate(this.rotationZ.value, 0, 0, 1);
-    }
-
-    public prepareOffset() {
-        if (this.x.value || this.y.value || this.z.value) translate(this.x.value, this.y.value, 0/*this.z.value*/);
-    }
-
-    public prepareScale() {
-        if (this.scale.value != 1) scale(this.scale.value, this.scale.value, this.scale.value);
-    }
-
-    public prepareOrigin(elementWidth: number, elementHeight: number) {
-        if (this.originX.value || this.originY.value) translate(-elementWidth * this.originX.value, -elementHeight * this.originY.value, 0);
+    public updateMatrix(matrixId: number): void {
+        let matrix: Matrix4f = new Matrix4f().setIdentity();
+        let properties = this.properties;
+        switch (matrixId) {
+            case index.alignMatrix:
+                matrix.translate(new Vector3f(
+                    properties[index.alignX] * properties[index.parentSizeX],
+                    properties[index.alignY] * properties[index.parentSizeY],
+                    properties[index.alignZ] * properties[index.parentSizeZ]
+                ));
+                break;
+            case index.rotationMatrix:
+                matrix.rotate(properties[index.rotationAngle], new Vector3f(
+                    properties[index.rotationX],
+                    properties[index.rotationY],
+                    properties[index.rotationZ]
+                ));
+                break;
+            case index.offsetMatrix:
+                matrix.translate(new Vector3f(
+                    properties[index.offsetX],
+                    properties[index.offsetY],
+                    properties[index.offsetZ]
+                ));
+                break;
+            case index.scaleMatrix:
+                matrix.scale(new Vector3f(
+                    properties[index.scaleX],
+                    properties[index.scaleY],
+                    properties[index.scaleZ]
+                ));
+                break;
+            case index.originMatrix:
+                matrix.translate(new Vector3f(
+                    -properties[index.originX] * properties[index.sizeX],
+                    -properties[index.originY] * properties[index.sizeY],
+                    -properties[index.originZ] * properties[index.sizeZ]
+                ));
+                break;
+        }
+        if (this.dirtyMatrices) {
+            this.dirtyMatrices[this.dirtyMatrices.indexOf(matrixId)] = -2;
+        }
+        this.matrices[matrixId] = matrix;
     }
 
     public abstract render(time: number, parentWidth: number, parentHeight: number): void;
@@ -338,6 +398,11 @@ export class Text extends Element {
         this.text = data.text || "";
         this.shadow = !!data.shadow;
         this.autoFit = !!data.autoFit;
+    }
+
+    setText(text: string) {
+        this.text = text;
+        this.setProperty(index.sizeX, Draw.getStringWidth(text));
     }
 
     render(time: number, parentWidth: number, parentHeight: number): void {
@@ -375,8 +440,6 @@ export function rect(data: BoxData): Box {
 
 export class Box extends Element {
 
-    public width: Animatable;
-    public height: Animatable;
     public children: Element[];
     public texture: string | ResourceLocation;
     public uMin: number;
@@ -413,6 +476,24 @@ export class Box extends Element {
         this.beforeRender = data.beforeRender || null;
         this.afterRender = data.afterRender || null;
 
+    }
+
+    updateMatrix(matrixId: number): void {
+
+        if (matrixId >= 0) {
+            super.updateMatrix(matrixId);
+            return
+        }
+        if (matrixId === -1) {
+            let properties = this.properties;
+            for (let child of this.children) {
+                let childProperties = child.properties;
+                childProperties[index.parentSizeX] = properties[index.sizeX];
+                childProperties[index.parentSizeY] = properties[index.sizeY];
+                childProperties[index.parentSizeZ] = properties[index.sizeZ];
+                child.updateMatrix(index.alignMatrix);
+            }
+        }
     }
 
     render(time: number, parentWidth: number, parentHeight: number): void {
