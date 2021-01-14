@@ -228,7 +228,7 @@ function updateHoverStates(element: Element, baseMatrix: Matrix4f, mouse: V2) {
         Matrix4f.invert(matrix, inv);
         Matrix4f.transform(inv, vector, vector);
     
-        testText.text = vector.getX() + ' ' + vector.getY();
+        // testText.text = vector.getX() + ' ' + vector.getY();
 
         let x = vector.getX();
         let y = vector.getY();
@@ -730,28 +730,28 @@ Events.on(plugin, 'gui_overlay_render', function (e) {
 
 });
 
-let testText = text({text: 'hello world'});
+// let testText = text({text: 'hello world'});
 
-let test = rect({
-    size: {x: 100, y: 20},
-    color: {a: 1, r: 1, g: 0.5, b: 0.1},
-    offset: {x: 30, y: 10},
-    rotation: {angle: -100, x: 0, y: 0, z: 1},
-    children: [
-        testText
-    ],
-    onHover: (elem, hovered) => {
-        elem.setProperty(index.r, hovered ? 1 : 0);
-    }
-});
+// let test = rect({
+//     size: {x: 100, y: 20},
+//     color: {a: 1, r: 1, g: 0.5, b: 0.1},
+//     offset: {x: 30, y: 10},
+//     rotation: {angle: -100, x: 0, y: 0, z: 1},
+//     children: [
+//         testText
+//     ],
+//     onHover: (elem, hovered) => {
+//         elem.setProperty(index.r, hovered ? 1 : 0);
+//     }
+// });
 
-overlay.push(test);
+// overlay.push(test);
 
-Events.on(plugin, 'key_press', (e: KeyPressEvent) => {
-    if (e.key == Keyboard.KEY_J) {
-        test.setProperty(index.offsetX, Math.random() * 500, 1000, 0);
-    }
-})
+// Events.on(plugin, 'key_press', (e: KeyPressEvent) => {
+//     if (e.key == Keyboard.KEY_J) {
+//         test.setProperty(index.offsetX, Math.random() * 500, 1000, 0);
+//     }
+// })
 
 
 // ToDo: one-time click detection
