@@ -739,7 +739,7 @@ declare class Vector4f extends Vector {
 
     constructor();
 
-    constructor(w: number, x: number, y: number, z: number);
+    constructor(x: number, y: number, z: number, w: number);
 
     equals(obj: any): boolean;
 
@@ -893,7 +893,7 @@ declare class GL11 {
 
     static glPopMatrix(): void;
 
-    static glMultMatrixf(matrix: FloatBuffer): void;
+    static glMultMatrix(matrix: FloatBuffer): void;
 
     static glPushAttrib(attrib: int): void;
 

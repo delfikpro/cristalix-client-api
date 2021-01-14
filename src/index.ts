@@ -1,14 +1,23 @@
-
+// Positive numbers are matrices that are directly converted to GL transformations
 export const alignMatrix = 0;
 export const rotationMatrix = 1;
 export const offsetMatrix = 2;
 export const scaleMatrix = 3;
 export const originMatrix = 4;
 
+// Amount of direct GL matrices for preallocations
 export const matrixFields = 5;
 
-export const childrenAlignMatrix = -1;
+// Negative numbers are markers for non-gl properties updates to smh influence the gl matrices
 
+// Examples of marker sizeMatrix being used:
+// to update autoFit scale when text content changes; 
+// to update align matrices of rect's children when its width/height changes
+export const sizeMatrix = -1;
+export const colorMatrix = -2;
+export const uvMatrix = -3;
+
+export const allMatrices = [alignMatrix, rotationMatrix, offsetMatrix, scaleMatrix, originMatrix, sizeMatrix, colorMatrix, uvMatrix];
 
 export const matrixInfluence: number[][] = [];
 
@@ -29,17 +38,22 @@ export const rotationY = 13; matrixInfluence.push([rotationMatrix]);
 export const rotationZ = 14; matrixInfluence.push([rotationMatrix]);
 export const rotationAngle = 15; matrixInfluence.push([rotationMatrix]);
 
-export const a = 16; matrixInfluence.push([]);
-export const r = 17; matrixInfluence.push([]);
-export const g = 18; matrixInfluence.push([]);
-export const b = 19; matrixInfluence.push([]);
+export const a = 16; matrixInfluence.push([colorMatrix]);
+export const r = 17; matrixInfluence.push([colorMatrix]);
+export const g = 18; matrixInfluence.push([colorMatrix]);
+export const b = 19; matrixInfluence.push([colorMatrix]);
 
-export const sizeX = 20; matrixInfluence.push([childrenAlignMatrix, originMatrix]);
-export const sizeY = 21; matrixInfluence.push([childrenAlignMatrix, originMatrix]);
-export const sizeZ = 22; matrixInfluence.push([childrenAlignMatrix, originMatrix]);
+export const parentSizeX = 20; matrixInfluence.push([]);
+export const parentSizeY = 21; matrixInfluence.push([]);
+export const parentSizeZ = 22; matrixInfluence.push([]);
 
-export const parentSizeX = 23; matrixInfluence.push([]);
-export const parentSizeY = 24; matrixInfluence.push([]);
-export const parentSizeZ = 25; matrixInfluence.push([]);
+export const sizeX = 23; matrixInfluence.push([sizeMatrix, originMatrix]);
+export const sizeY = 24; matrixInfluence.push([sizeMatrix, originMatrix]);
+export const sizeZ = 25; matrixInfluence.push([sizeMatrix, originMatrix]);
 
-export const valueFields = 26;
+export const textureX = 26; matrixInfluence.push([uvMatrix]);
+export const textureY = 27; matrixInfluence.push([uvMatrix]);
+export const textureWidth = 28; matrixInfluence.push([uvMatrix]);
+export const textureHeight = 29; matrixInfluence.push([uvMatrix]);
+
+export const valueFields = 30;

@@ -1,15 +1,12 @@
 /// <reference path="../reference/cristalix.d.ts" />
 
-import * as easing from './easing';
 import * as index from './index';
 import { number } from './simple-nbt';
-import * as vecmath from './vecmath';
-// import * as renderhelper from './renderhelper';
 
 
 const glPushMatrix = GL11.glPushMatrix;
 const glPopMatrix = GL11.glPopMatrix;
-const glMultMatrixf = GL11.glMultMatrixf;
+const glMultMatrix = GL11.glMultMatrix;
 const glColor = GL11.glColor4f;
 
 export const CENTER = { x: 0.5, y: 0.5 };
@@ -23,6 +20,7 @@ export const BOTTOM_RIGHT = { x: 1, y: 1 };
 export const BOTTOM_LEFT = { x: 0, y: 1 };
 
 export type Callback = () => void;
+
 
 export class Animation {
 
@@ -75,17 +73,6 @@ export type V2 = { x?: number, y?: number };
 export type V3 = V2 & { z?: number };
 export type Rotation = V3 & { angle: number };
 
-export type Texture = {
-    resource: string,
-    resourceWidth?: number | 256;
-    resourceHeight?: number | 256;
-
-    uMin?: number;
-    vMin?: number;
-    uDelta?: number;
-    vDelta?: number;
-}
-
 export type ElementData = {
 
     offset?: V3;
@@ -93,19 +80,24 @@ export type ElementData = {
     origin?: V3;
     scale?: V3;
     rotation?: Rotation;
+    color?: Color;
     enabled?: boolean;
     beforeRender?: () => {};
     afterRender?: () => {};
+    onClick?: (element: Element, button: number) => void;
+    onHover?: (element: Element, hovered: boolean) => void;
 
 }
 
 export type RectData = {
 
-    texture?: Texture;
-    color?: Color;
-    size?: V3;
+    texture?: string | ResourceLocation;
+    size?: V2;
+    textureFrom?: V2;
+    textureSize?: V2;
+    children?: Element[];
 
-}
+} & ElementData;
 
 
 export type Color = {
@@ -155,42 +147,123 @@ export type TextData = {
 
 
 export type ScreenState = {
-    factor: number,
-    width: number;
-    height: number;
-    mouseX: number;
-    mouseY: number;
-    time: number;
-    leftClick: boolean;
-    rightClick: boolean;
+    scaleFactor: number,
+    screenWidth: number;
+    screenHeight: number;
+    unicodeFlag: boolean;
 }
 
+
+export class Task {
+    
+    constructor(
+        public time: number,
+        public action: () => void
+    ) { }
+
+}
+
+export function schedule(delay: number, action: () => void) {
+    runningTasks.push(new Task(getTime() + delay, action));
+}
+
+var runningTasks: Task[] = [];
 var runningAnimations: Animation[] = [];
 
 function updateAnimations() {
     let time = getTime();
+
+    let newRunningTasks: Task[] = [];
+    for (let task of runningTasks) {
+        if (time >= task.time) task.action();
+        else newRunningTasks.push(task);
+    }
+    runningTasks = newRunningTasks;
+
     let newRunningAnimations: Animation[] = [];
     for (let animation of runningAnimations) {
         if (animation.update(time)) newRunningAnimations.push(animation);
     }
     for (let animation of runningAnimations) {
-        let element = animation.element;
-        let dirty = element.dirtyMatrices;
-        if (!dirty || !dirty.length) continue;
-        for (let dirtyMatrixId of dirty) {
-            if (dirtyMatrixId == -2) continue;
-            element.updateMatrix(dirtyMatrixId);
-        }
-        element.dirtyMatrices = null;
+        animation.element.cleanMatrices();
     }
     runningAnimations = newRunningAnimations
 }
 
-function updateClickables(ss: ScreenState) {
-
-    overlay.
+function hoverCulling(element: Element): boolean {
+    let passed = false;
+    if (element instanceof Rect) {
+        for (let child of element.children) {
+            if (hoverCulling(child)) {
+                passed = true;
+            }
+        }
+    }
+    if (element.onHover || element.onClick) {
+        passed = true;
+    }
+    element.passedHoverCulling = passed;
+    return passed;
 
 }
+
+function updateHoverStates(element: Element, baseMatrix: Matrix4f, mouse: V2) {
+
+    if (!element.passedHoverCulling) return;
+
+    let matrix = new Matrix4f();
+    matrix.load(baseMatrix);
+
+    for (let m of element.matrices) {
+        if (m) Matrix4f.mul(matrix, m, matrix);
+    }
+
+    if (element.onHover || element.onClick) {
+        let sizeX = element.properties[index.sizeX];
+        let sizeY = element.properties[index.sizeY];
+        
+        let vector = new Vector4f(mouse.x, mouse.y, 0, 1);
+    
+        let inv = new Matrix4f();
+        Matrix4f.invert(matrix, inv);
+        Matrix4f.transform(inv, vector, vector);
+    
+        testText.text = vector.getX() + ' ' + vector.getY();
+
+        let x = vector.getX();
+        let y = vector.getY();
+    
+        let hovered = x >= 0 && x < sizeX && y >= 0 && y < sizeY;
+        if (element.hovered != hovered) {
+            if (element.onHover) element.onHover(element, hovered);
+            element.hovered = hovered;
+        }
+        
+    }
+    
+
+    if (element instanceof Rect) {
+        for (let child of element.children) {
+            // updateHoverStates(child, new Vector4f(w, x, y, z));
+            updateHoverStates(child, matrix, mouse);
+        }
+    }
+
+}
+
+export function text(data: TextData): Text {
+    let element = new Text(data);
+    element.cleanMatrices();
+    return element;
+}
+
+export function rect(data: RectData): Rect {
+    let element = new Rect(data);
+    element.cleanMatrices();
+    return element;
+}
+
+let buffer = GLAllocation.createDirectFloatBuffer(16);
 
 export abstract class Element {
 
@@ -198,43 +271,72 @@ export abstract class Element {
     matrices: Matrix4f[];
     enabled: boolean;
     dirtyMatrices: number[];
+    hovered: boolean;
+    
     beforeRender?: () => void;
     afterRender?: () => void;
 
+    passedHoverCulling: boolean;
+    cachedHexColor: number;
+
+    onHover?: (element: Element, hovered: boolean) => void;
+    onClick?: (element: Element, button: number) => void;
+
     constructor(data: ElementData) {
 
-        let { offset, scale, align, origin, rotation, enabled } = data;
+        let { offset, scale, align, origin, rotation, enabled, color } = data;
 
         this.enabled = enabled == null ? true : enabled;
 
-        let properties = new Array<number>(index.valueFields);
         let matrices = new Array<Matrix4f>(index.matrixFields);
+        let properties = new Array<number>(index.valueFields);
+
+        // NativeRuntime.fillIntArray(properties, 0, properties.length, 0);
+        for (let i = 0; i < properties.length; i++) {
+            properties[i] = 0;
+        }
 
         this.properties = properties;
         this.matrices = matrices;
 
-        for (let i = 0; i < index.matrixFields; i++) {
-            matrices.push(null);
-        }
+        // properties.push(
+        if (offset && offset.x) this.setProperty(index.offsetX, offset.x);
+        if (offset && offset.y) this.setProperty(index.offsetY, offset.y);
+        if (offset && offset.z) this.setProperty(index.offsetZ, offset.z);
 
-        properties.push(
-            offset ? (offset.x || 0) : 0,
-            offset ? (offset.y || 0) : 0,
-            offset ? (offset.z || 0) : 0,
-            scale ? (scale.x || 0) : 0,
-            scale ? (scale.y || 0) : 0,
-            scale ? (scale.z || 0) : 0,
-            align ? (align.x || 0) : 0,
-            align ? (align.y || 0) : 0,
-            align ? (align.z || 0) : 0,
-            origin ? (origin.x || 0) : 0,
-            origin ? (origin.y || 0) : 0,
-            origin ? (origin.z || 0) : 0,
-            rotation ? (rotation.x || 0) : 0,
-            rotation ? (rotation.y || 0) : 0,
-            rotation ? (rotation.z || 0) : 1,
-            rotation ? (rotation.angle || 0) : 0
-        );
+        this.setProperty(index.scaleX, scale && scale.x ? scale.x : 1);
+        this.setProperty(index.scaleY, scale && scale.y ? scale.y : 1);
+        this.setProperty(index.scaleZ, scale && scale.z ? scale.z : 1);
+
+        if (align && align.x) this.setProperty(index.alignX, align.x);
+        if (align && align.y) this.setProperty(index.alignY, align.y);
+        if (align && align.z) this.setProperty(index.alignZ, align.z);
+
+        if (origin && origin.x) this.setProperty(index.originX, origin.x);
+        if (origin && origin.y) this.setProperty(index.originY, origin.y);
+        if (origin && origin.z) this.setProperty(index.originZ, origin.z);
+        
+        if (rotation && rotation.x) this.setProperty(index.rotationX, rotation.x);
+        if (rotation && rotation.y) this.setProperty(index.rotationY, rotation.y);
+        this.setProperty(index.rotationZ, rotation ? (rotation.z || 0) : 1);
+        if (rotation && rotation.angle) this.setProperty(index.rotationAngle, rotation.angle);
+
+        if (color) {
+            this.setProperty(index.a, color.a == undefined ? 1 : color.a);
+            this.setProperty(index.r, color.r == undefined ? 1 : color.r);
+            this.setProperty(index.g, color.g == undefined ? 1 : color.g);
+            this.setProperty(index.b, color.b == undefined ? 1 : color.b);
+        }
+        
+        properties[index.parentSizeX] = 0;
+        properties[index.parentSizeY] = 0;
+        properties[index.parentSizeZ] = 0;
+        // );
+
+        this.onClick = data.onClick || null;
+        this.onHover = data.onHover || null;
+        this.beforeRender = data.beforeRender || null;
+        this.afterRender = data.afterRender || null;
 
     };
 
@@ -242,13 +344,14 @@ export abstract class Element {
 
         if (!this.enabled) return;
 
+        this.cleanMatrices();
+
         for (let i = 0; i < index.matrixFields; i++) {
             let matrix = this.matrices[i];
             if (matrix) {
-                let buffer = GLAllocation.createDirectFloatBuffer(16);
                 matrix.store(buffer);
-                glMultMatrixf(buffer);
-                GLAllocation.freeBuffer(buffer);
+                buffer.flip();
+                glMultMatrix(buffer);
             }
         }
     }
@@ -314,6 +417,7 @@ export abstract class Element {
             runningAnimations.push(animation);
             return;
         }
+        // stdout.println('setting ' + propertyId + ' to ' + value);
         this.properties[propertyId] = value;
         let influence = index.matrixInfluence[propertyId];
         if (influence.length) {
@@ -327,65 +431,86 @@ export abstract class Element {
             for (let dirtyMatrix of this.dirtyMatrices) {
                 if (dirtyMatrix == matrixId) continue loop;
             }
+            // stdout.println('Marking ' + matrixId + ' as dirty');
             this.dirtyMatrices.push(matrixId);
         }
     }
 
-    public updateMatrix(matrixId: number): void {
-        let matrix: Matrix4f = new Matrix4f().setIdentity();
-        let properties = this.properties;
-        switch (matrixId) {
-            case index.alignMatrix:
-                matrix.translate(new Vector3f(
-                    properties[index.alignX] * properties[index.parentSizeX],
-                    properties[index.alignY] * properties[index.parentSizeY],
-                    properties[index.alignZ] * properties[index.parentSizeZ]
-                ));
-                break;
-            case index.rotationMatrix:
-                matrix.rotate(properties[index.rotationAngle], new Vector3f(
-                    properties[index.rotationX],
-                    properties[index.rotationY],
-                    properties[index.rotationZ]
-                ));
-                break;
-            case index.offsetMatrix:
-                matrix.translate(new Vector3f(
-                    properties[index.offsetX],
-                    properties[index.offsetY],
-                    properties[index.offsetZ]
-                ));
-                break;
-            case index.scaleMatrix:
-                matrix.scale(new Vector3f(
-                    properties[index.scaleX],
-                    properties[index.scaleY],
-                    properties[index.scaleZ]
-                ));
-                break;
-            case index.originMatrix:
-                matrix.translate(new Vector3f(
-                    -properties[index.originX] * properties[index.sizeX],
-                    -properties[index.originY] * properties[index.sizeY],
-                    -properties[index.originZ] * properties[index.sizeZ]
-                ));
-                break;
+    public cleanMatrices(): void {
+        let dirty = this.dirtyMatrices;
+        if (!dirty || !dirty.length) return;
+        for (let dirtyMatrixId of dirty) {
+            if (dirtyMatrixId == -128) continue;
+            this.updateMatrix(dirtyMatrixId);
         }
-        if (this.dirtyMatrices) {
-            this.dirtyMatrices[this.dirtyMatrices.indexOf(matrixId)] = -2;
-        }
-        this.matrices[matrixId] = matrix;
+        this.dirtyMatrices = null;
     }
 
-    public abstract render(time: number, parentWidth: number, parentHeight: number): void;
+    public updateMatrix(matrixId: number): void {
+        // stdout.println('updating matrix ' + matrixId)
+        let properties = this.properties;
+        if (this.dirtyMatrices) {
+            this.dirtyMatrices[this.dirtyMatrices.indexOf(matrixId)] = -128;
+        }
 
-    public abstract checkHovered(screenState: ScreenState, parentWidth: number, parentHeight: number): void;
+
+        if (matrixId == index.colorMatrix) {
+            this.cachedHexColor = colorParts2Hex(
+                properties[index.a],
+                properties[index.r],
+                properties[index.g],
+                properties[index.b],
+            )
+        }
+
+
+        if (matrixId >= 0) {
+            let matrix: Matrix4f = new Matrix4f().setIdentity();
+            switch (matrixId) {
+                case index.alignMatrix:
+                    matrix.translate(new Vector3f(
+                        properties[index.alignX] * properties[index.parentSizeX],
+                        properties[index.alignY] * properties[index.parentSizeY],
+                        properties[index.alignZ] * properties[index.parentSizeZ]
+                    ));
+                    break;
+                case index.rotationMatrix:
+                    matrix.rotate(properties[index.rotationAngle], new Vector3f(
+                        properties[index.rotationX],
+                        properties[index.rotationY],
+                        properties[index.rotationZ]
+                    ));
+                    break;
+                case index.offsetMatrix:
+                    matrix.translate(new Vector3f(
+                        properties[index.offsetX],
+                        properties[index.offsetY],
+                        properties[index.offsetZ]
+                    ));
+                    break;
+                case index.scaleMatrix:
+                    matrix.scale(new Vector3f(
+                        properties[index.scaleX],
+                        properties[index.scaleY],
+                        properties[index.scaleZ]
+                    ));
+                    break;
+                case index.originMatrix:
+                    matrix.translate(new Vector3f(
+                        -properties[index.originX] * properties[index.sizeX],
+                        -properties[index.originY] * properties[index.sizeY],
+                        -properties[index.originZ] * properties[index.sizeZ]
+                    ));
+                    break;
+            }
+            this.matrices[matrixId] = matrix;
+        }
+    }
+
+    public abstract render(): void;
 
 }
 
-export function text(data: TextData): Text {
-    return new Text(data);
-}
 
 export class Text extends Element {
 
@@ -398,6 +523,20 @@ export class Text extends Element {
         this.text = data.text || "";
         this.shadow = !!data.shadow;
         this.autoFit = !!data.autoFit;
+        this.setProperty(index.sizeX, fontRenderer.getStringWidth(this.text));
+        this.properties[index.sizeY] = 9;
+    }
+
+    public updateMatrix(matrixId: number): void {
+        if ((matrixId == index.sizeMatrix || matrixId == index.scaleMatrix) && this.autoFit) {
+            let textWidth = this.properties[index.sizeX];
+            let parentWidth = this.properties[index.parentSizeX];
+            if (textWidth) {
+                let factor = (parentWidth - 2) / textWidth;
+                if (factor < 1) this.properties[index.scaleX] = factor;
+            }
+        }
+        super.updateMatrix(matrixId);
     }
 
     setText(text: string) {
@@ -405,86 +544,54 @@ export class Text extends Element {
         this.setProperty(index.sizeX, Draw.getStringWidth(text));
     }
 
-    render(time: number, parentWidth: number, parentHeight: number): void {
+    render(): void {
         if (!this.enabled) return;
 
-        let textWidth = Draw.getStringWidth(this.text);
-        let textHeight = 9;
-
-        if (textWidth && this.autoFit) {
-            let factor = (parentWidth - 2) / textWidth;
-            if (factor < 1) this.scale.value = factor;
-        }
-
-        pushMatrix();
-        super.prepare(time, parentWidth, parentHeight, textWidth, textHeight);
+        glPushMatrix();
+        super.applyTransformations();
 
         // GL11.glDepthFunc(GL11.GL_LESS);
         // GlStateManager.disableDepth();
 
-        if (this.scale.value) Draw.drawString(this.text, 0, fontRenderer.getUnicodeFlag() ? 0 : 1, -1, this.shadow);
+        // ToDo: colored text
+        fontRenderer.drawString(this.text, 0, fontRenderer.getUnicodeFlag() ? 0 : 1, -1, this.shadow);
 
         // GL11.glDepthFunc(GL11.GL_LEQUAL);
         // GlStateManager.enableDepth();
-        popMatrix();
+        glPopMatrix();
 
     }
 
-    checkHovered(screenState: ScreenState, parentWidth: number, parentHeight: number): void { }
-
 }
 
-export function rect(data: BoxData): Box {
-    return new Box(data);
-}
-
-export class Box extends Element {
+export class Rect extends Element {
 
     public children: Element[];
     public texture: string | ResourceLocation;
-    public uMin: number;
-    public vMin: number;
-    public uDelta: number;
-    public vDelta: number;
-    public textureWidth: number;
-    public textureHeight: number;
-    public temp_magic: boolean;
-    public onLeftClick: MouseHandler;
-    public onRightClick: MouseHandler;
-    public onHover: (screenState: ScreenState, hovered: boolean) => void;
-    public afterRender: () => void;
-    public beforeRender: () => void;
-    public hovered: boolean = false;
 
-    constructor(data: BoxData) {
+    constructor(data: RectData) {
         super(data);
+        
+        if (data.size) {
+            if (data.size.x) this.setProperty(index.sizeX, data.size.x);
+            if (data.size.y) this.setProperty(index.sizeY, data.size.y);
+        }
+        if (data.textureFrom) {
+            if (data.textureFrom.x) this.setProperty(index.textureX, data.textureFrom.x);
+            if (data.textureFrom.y) this.setProperty(index.textureY, data.textureFrom.y);
+        }
 
-        this.width = new Animatable(data.width || 0);
-        this.height = new Animatable(data.height || 0);
+        this.setProperty(index.textureWidth, data.textureSize ? data.textureSize.x || 1 : 1);
+        this.setProperty(index.textureHeight, data.textureSize ? data.textureSize.y || 1 : 1);
+
         this.children = data.children || [];
         this.texture = data.texture || null;
-        this.onLeftClick = data.onLeftClick || null;
-        this.onRightClick = data.onRightClick || null;
-        this.onHover = data.onHover || null;
-        this.uMin = data.uMin || 0;
-        this.vMin = data.vMin || 0;
-        this.uDelta = data.uDelta || 256;
-        this.vDelta = data.vDelta || 256;
-        this.textureWidth = data.textureWidth || 256;
-        this.textureHeight = data.textureHeight || 256;
-        this.temp_magic = !!data.temp_magic;
-        this.beforeRender = data.beforeRender || null;
-        this.afterRender = data.afterRender || null;
 
     }
 
     updateMatrix(matrixId: number): void {
 
-        if (matrixId >= 0) {
-            super.updateMatrix(matrixId);
-            return
-        }
-        if (matrixId === -1) {
+        if (matrixId === index.sizeMatrix) {
             let properties = this.properties;
             for (let child of this.children) {
                 let childProperties = child.properties;
@@ -494,107 +601,50 @@ export class Box extends Element {
                 child.updateMatrix(index.alignMatrix);
             }
         }
+
+        super.updateMatrix(matrixId);
+
     }
 
-    render(time: number, parentWidth: number, parentHeight: number): void {
+    render(): void {
         if (!this.enabled) return;
 
-        this.width.update(time);
-        this.height.update(time);
+        glPushMatrix();
+        super.applyTransformations();
 
-        let width = this.width.value;
-        let height = this.height.value;
+        if (this.beforeRender) this.beforeRender();
 
-        pushMatrix();
-        super.prepare(time, parentWidth, parentHeight, width, height);
+        let properties = this.properties;
 
-        this.render0(width, height);
+        if (this.texture) {
+            GlStateManager.enableBlend();
+            Textures.bindTexture(this.texture);
+
+            let precision = 0x4000_0000;
+
+            Draw.drawScaledCustomSizeModalRect(0, 0, 
+                properties[index.textureX] * precision, 
+                properties[index.textureY] * precision, 
+                properties[index.textureWidth] * precision, 
+                properties[index.textureHeight] * precision, 
+                properties[index.sizeX], 
+                properties[index.sizeY], 
+                precision,
+                precision
+            );
+        }
+        else {
+            Draw.drawRect(0, 0, properties[index.sizeX], properties[index.sizeY], this.cachedHexColor);
+        }
+        if (this.afterRender) this.afterRender();
 
 
-        translate(0, 0, 0.01);
+        // translate(0, 0, 0.01);
         for (var i = 0; i < this.children.length; i++) {
-            this.children[i].render(time, width, height);
+            this.children[i].render();
         }
 
-        popMatrix();
-
-    }
-
-    render0(width: number, height: number) {
-
-        if (this.scale.value) {
-
-            if (this.beforeRender) this.beforeRender();
-
-            if (this.texture) {
-                GlStateManager.enableBlend();
-                Textures.bindTexture(this.texture);
-                color(
-                    this.a.value,
-                    this.r.value,
-                    this.g.value,
-                    this.b.value
-                );
-                Draw.drawScaledCustomSizeModalRect(0, 0, this.uMin, this.vMin, this.uDelta, this.vDelta, width, height, this.textureWidth, this.textureHeight);
-            }
-            else {
-                Draw.drawRect(0, 0, width, height, this.lastColor);
-            }
-            if (this.afterRender) this.afterRender();
-        }
-    }
-
-    checkHovered(ss: ScreenState, parentWidth: number, parentHeight: number): void {
-
-        if (!this.enabled) return;
-
-        // if (!stack.enabled || !(this.children.length || action)) return;
-
-        let originX = this.originX.value;
-        let originY = this.originY.value;
-        let alignX = this.alignX.value;
-        let alignY = this.alignY.value;
-        let width = this.width.value;
-        let height = this.height.value;
-        let scale = this.scale.value;
-        let x = this.x.value;
-        let y = this.y.value;
-
-        ss.stackX += parentWidth * alignX * ss.stackScale;
-        ss.stackY += parentHeight * alignY * ss.stackScale;
-        ss.stackX += x * ss.stackScale;
-        ss.stackY += y * ss.stackScale;
-        ss.stackScale *= scale;
-        ss.stackX -= width * originX * ss.stackScale;
-        ss.stackY -= height * originY * ss.stackScale;
-
-        let dx = ss.mouseX - ss.stackX;
-        let dy = ss.mouseY - ss.stackY;
-
-        let hovered = dx >= 0 && dx < width * ss.stackScale && dy >= 0 && dy < height * ss.stackScale;
-        if (this.hovered != hovered && this.onHover) {
-            this.onHover(ss, hovered);
-        }
-        this.hovered = hovered;
-
-        if (this.hovered) {
-            if (ss.leftClick && this.onLeftClick) this.onLeftClick(ss);
-            if (ss.rightClick && this.onRightClick) this.onRightClick(ss);
-        }
-
-        for (let child of this.children)
-            child.checkHovered(ss, parentWidth, parentHeight);
-
-        // str = "stack: " + ss.stackX + " " + ss.stackY + " " + ss.stackScale + 
-        //  ", d: " + dx + " " + dy + ", pos: " + this.stack.x.value + " " + this.stack.y.value;
-
-        ss.stackX += width * originX * ss.stackScale;
-        ss.stackY += height * originY * ss.stackScale;
-        ss.stackScale /= scale;
-        ss.stackX -= x * ss.stackScale;
-        ss.stackY -= y * ss.stackScale;
-        ss.stackX -= parentWidth * alignX * ss.stackScale;
-        ss.stackY -= parentHeight * alignY * ss.stackScale;
+        glPopMatrix();
 
     }
 
@@ -607,50 +657,43 @@ export class Item extends Element {
     constructor(data: ItemData) {
         super(data);
         this.item = data.item;
+        this.properties.push(16, 16, 0); // size
     }
 
-    render(time: number, parentWidth: number, parentHeight: number): void {
+    render(): void {
         if (!this.enabled) return;
 
-        pushMatrix();
+        glPushMatrix();
+        super.applyTransformations();
         RenderHelper.enableGUIStandardItemLighting();
-        // GL11.glTranslatef(0, 0, +100);
-        super.prepare(time, parentWidth, parentHeight, 16, 16);
-        Draw.renderItemAndEffectIntoGUI(this.item, this.x.value, this.y.value);
+        Draw.renderItemAndEffectIntoGUI(this.item, 0, 0);
         RenderHelper.disableStandardItemLighting();
-        popMatrix();
+        glPopMatrix();
 
     }
-
-    checkHovered(screenState: ScreenState, parentWidth: number, parentHeight: number): void { }
-
 }
 
 
 export function getScreenState(): ScreenState {
-    let factor = Draw.getResolution().getScaleFactor();
-    let screenWidth = Display.getWidth() / factor;
-    let screenHeight = Display.getHeight() / factor;
-    let mouseX = Mouse.getX() / factor;
-    let mouseY = screenHeight - Mouse.getY() / factor;
-    let leftClick = Mouse.isButtonDown(0);
-    let rightClick = Mouse.isButtonDown(1);
-    let time = getTime();
+    let resolution = minecraft.getResolution();
+    let scaleFactor = resolution.getScaleFactor();
+    let screenWidth = resolution.getScaledWidth();
+    let screenHeight = resolution.getScaledHeight();
+    let unicodeFlag = fontRenderer.getUnicodeFlag();
+    
     return {
-        factor: factor,
-        width: screenWidth,
-        height: screenHeight,
-        mouseX: mouseX,
-        mouseY: mouseY,
-        time: time,
-        leftClick: leftClick,
-        rightClick: rightClick,
-        stackX: 0,
-        stackY: 0,
-        stackScale: 1
+        scaleFactor,
+        screenWidth,
+        screenHeight,
+        unicodeFlag
     };
 }
 
+var lastScreenState = getScreenState();
+
+// let mouseX = Mouse.getX() / factor;
+// let mouseY = screenHeight - Mouse.getY() / factor;
+// let time = getTime();
 
 export const overlay: Element[] = [];
 
@@ -659,18 +702,57 @@ export var zIndex = 0;
 
 Events.on(plugin, 'gui_overlay_render', function (e) {
 
-    // Draw.drawString(str, 10, 10);
-
     let screenState = getScreenState();
+    if (
+        lastScreenState.scaleFactor != screenState.scaleFactor || 
+        lastScreenState.screenWidth != screenState.screenWidth || 
+        lastScreenState.screenHeight != screenState.screenHeight || 
+        lastScreenState.unicodeFlag != screenState.unicodeFlag
+    ) {
+        for (let element of overlay) {
+            element.setProperty(index.parentSizeX, screenState.screenWidth);
+            element.setProperty(index.parentSizeY, screenState.screenHeight);
+        }
+        lastScreenState = screenState;
+    }
 
-    translate(0, 0, +zIndex);
+    updateAnimations();
 
-    for (let element of overlay)
-        element.render(screenState.time, screenState.width, screenState.height);
-
-    translate(0, 0, -zIndex);
+    for (let element of overlay) {
+        hoverCulling(element);
+        // updateHoverStates(element, new Vector4f(Mouse.getX() / screenState.scaleFactor, (Display.getHeight() - Mouse.getY()) / screenState.scaleFactor, 0, 1));
+        updateHoverStates(element, new Matrix4f().setIdentity(), {
+            x: Mouse.getX() / screenState.scaleFactor, 
+            y: (Display.getHeight() - Mouse.getY()) / screenState.scaleFactor
+        });
+        element.render();
+    }
 
 });
+
+let testText = text({text: 'hello world'});
+
+let test = rect({
+    size: {x: 100, y: 20},
+    color: {a: 1, r: 1, g: 0.5, b: 0.1},
+    offset: {x: 30, y: 10},
+    rotation: {angle: -100, x: 0, y: 0, z: 1},
+    children: [
+        testText
+    ],
+    onHover: (elem, hovered) => {
+        elem.setProperty(index.r, hovered ? 1 : 0);
+    }
+});
+
+overlay.push(test);
+
+Events.on(plugin, 'key_press', (e: KeyPressEvent) => {
+    if (e.key == Keyboard.KEY_J) {
+        test.setProperty(index.offsetX, Math.random() * 500, 1000, 0);
+    }
+})
+
 
 // ToDo: one-time click detection
 // const mouseButtons = [
@@ -681,9 +763,9 @@ Events.on(plugin, 'gui_overlay_render', function (e) {
 Events.on(plugin, 'game_loop', function (e) {
     let screenState = getScreenState();
 
-    for (let element of overlay) {
-        element.checkHovered(screenState, screenState.width, screenState.height);
-    }
+    // for (let element of overlay) {
+    //     element.checkHovered(screenState, screenState.width, screenState.height);
+    // }
 
     // for (var i = 0; i < mouseButtons.length; i++) {
     //     let button = mouseButtons[i];
