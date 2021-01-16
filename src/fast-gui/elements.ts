@@ -1,3 +1,5 @@
+/// <reference path="../../reference/cristalix.d.ts" />
+
 import { AnimationFinisher, ElementData, RectData, ItemData, TextData, Rotation, V3 } from './api';
 import { colorParts2Hex } from './colors';
 import { runningAnimations, Animation } from './fast-gui';

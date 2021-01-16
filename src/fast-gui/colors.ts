@@ -1,3 +1,4 @@
+/// <reference path="../../reference/cristalix.d.ts" />
 
 export type Color = {
     a?: number,

@@ -1,3 +1,5 @@
+/// <reference path="../../reference/cristalix.d.ts" />
+
 import { Color } from "./colors";
 import {AbstractElement, ItemElement, RectangleElement, TextElement} from './elements'
 import { runningTasks } from "./fast-gui";

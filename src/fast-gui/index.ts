@@ -1,3 +1,5 @@
+/// <reference path="../../reference/cristalix.d.ts" />
+
 // Positive numbers are matrices that are directly converted to GL transformations
 export const alignMatrix = 0;
 export const rotationMatrix = 1;

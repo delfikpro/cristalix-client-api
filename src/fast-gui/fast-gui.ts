@@ -1,3 +1,5 @@
+/// <reference path="../../reference/cristalix.d.ts" />
+
 import * as index from './index';
 import { AnimationFinisher, ItemData, RectData, Task, TextData, V2 } from './api';
 import {AbstractElement, ItemElement, RectangleElement, TextElement} from './elements'
