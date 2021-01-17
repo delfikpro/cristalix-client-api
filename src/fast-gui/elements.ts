@@ -448,7 +448,7 @@ export class RectangleElement extends AbstractElement {
     }
 
     public addSize(size: V3, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
-        this.setAlign({
+        this.setSize({
             x: this.properties[index.sizeX] + size.x,
             y: this.properties[index.sizeY] + size.y,
             z: this.properties[index.sizeZ] + size.z,
