@@ -1,7 +1,7 @@
 /// <reference path="../../reference/cristalix.d.ts" />
 
 import { AnimationFinisher, ElementData, RectData, ItemData, TextData, Rotation, V3 } from './api';
-import { colorParts2Hex } from './colors';
+import { Color, colorParts2Hex } from './colors';
 import { runningAnimations, Animation } from './fast-gui';
 import * as index from './index';
 
@@ -167,6 +167,26 @@ export abstract class AbstractElement {
             x: this.properties[index.scaleX] + scale.x,
             y: this.properties[index.scaleY] + scale.y,
             z: this.properties[index.scaleZ] + scale.z,
+        }, duration, easingId, onFinish);
+    }
+
+    public setColor(color: Color, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
+        let a = color.a;
+        let r = color.r;
+        let g = color.g;
+        let b = color.b;
+        if (a !== undefined) this.setProperty(index.colorA, a, duration, easingId, onFinish);
+        if (r !== undefined) this.setProperty(index.colorR, r, duration, easingId, onFinish);
+        if (g !== undefined) this.setProperty(index.colorG, g, duration, easingId, onFinish);
+        if (b !== undefined) this.setProperty(index.colorB, b, duration, easingId, onFinish);
+    }
+
+    public addColor(color: Color, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
+        this.setColor({
+            a: this.properties[index.colorA] + color.a,
+            r: this.properties[index.colorR] + color.r,
+            g: this.properties[index.colorG] + color.g,
+            b: this.properties[index.colorB] + color.b,
         }, duration, easingId, onFinish);
     }
 
