@@ -68,15 +68,15 @@ export abstract class AbstractElement {
         if (rotation && rotation.angle) this.setProperty(index.rotationAngle, rotation.angle);
 
         if (color) {
-            this.setProperty(index.a, color.a == undefined ? 1 : color.a);
-            this.setProperty(index.r, color.r == undefined ? 1 : color.r);
-            this.setProperty(index.g, color.g == undefined ? 1 : color.g);
-            this.setProperty(index.b, color.b == undefined ? 1 : color.b);
+            this.setProperty(index.colorA, color.a == undefined ? 1 : color.a);
+            this.setProperty(index.colorR, color.r == undefined ? 1 : color.r);
+            this.setProperty(index.colorG, color.g == undefined ? 1 : color.g);
+            this.setProperty(index.colorB, color.b == undefined ? 1 : color.b);
         }
         
-        properties[index.parentSizeX] = 0;
-        properties[index.parentSizeY] = 0;
-        properties[index.parentSizeZ] = 0;
+        this.setProperty(index.parentSizeX, 0);
+        this.setProperty(index.parentSizeY, 0);
+        this.setProperty(index.parentSizeZ, 0);
         // );
 
         this.onClick = data.onClick || null;
@@ -159,7 +159,7 @@ export abstract class AbstractElement {
                 }
             }
             if (!animation) animation = new Animation(this, propertyId);
-            animation.newTarget(value, duration, easingId);
+            animation.newTarget(value, duration, easingId, onFinish);
             runningAnimations.push(animation);
             return;
         }
@@ -202,10 +202,10 @@ export abstract class AbstractElement {
 
         if (matrixId == index.colorMatrix) {
             this.cachedHexColor = colorParts2Hex(
-                properties[index.a],
-                properties[index.r],
-                properties[index.g],
-                properties[index.b],
+                properties[index.colorA],
+                properties[index.colorR],
+                properties[index.colorG],
+                properties[index.colorB],
             )
         }
 
@@ -257,6 +257,7 @@ export abstract class AbstractElement {
         if (!this.enabled) return;
 
         glPushMatrix();
+        this.cleanMatrices();
         this.applyTransformations();
 
         if (this.beforeRender) this.beforeRender();
@@ -331,16 +332,24 @@ export class RectangleElement extends AbstractElement {
             if (data.size.x) this.setProperty(index.sizeX, data.size.x);
             if (data.size.y) this.setProperty(index.sizeY, data.size.y);
         }
-        if (data.textureFrom) {
-            if (data.textureFrom.x) this.setProperty(index.textureX, data.textureFrom.x);
-            if (data.textureFrom.y) this.setProperty(index.textureY, data.textureFrom.y);
+
+        let texture = data.texture;
+
+        if (texture) {
+            let start = texture.start;
+            if (start) {
+                if (start.x) this.setProperty(index.textureX, start.x);
+                if (start.y) this.setProperty(index.textureY, start.y);
+            }
+    
+            this.texture = texture.resource || null;
         }
 
-        this.setProperty(index.textureWidth, data.textureSize ? data.textureSize.x || 1 : 1);
-        this.setProperty(index.textureHeight, data.textureSize ? data.textureSize.y || 1 : 1);
+        this.setProperty(index.textureWidth, (texture && texture.size) ? texture.size.x || 1 : 1);
+        this.setProperty(index.textureHeight, (texture && texture.size) ? texture.size.y || 1 : 1);
+
 
         this.children = data.children || [];
-        this.texture = data.texture || null;
 
     }
 

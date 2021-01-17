@@ -40,14 +40,14 @@ export const rotationY = 13; matrixInfluence.push([rotationMatrix]);
 export const rotationZ = 14; matrixInfluence.push([rotationMatrix]);
 export const rotationAngle = 15; matrixInfluence.push([rotationMatrix]);
 
-export const a = 16; matrixInfluence.push([colorMatrix]);
-export const r = 17; matrixInfluence.push([colorMatrix]);
-export const g = 18; matrixInfluence.push([colorMatrix]);
-export const b = 19; matrixInfluence.push([colorMatrix]);
+export const colorA = 16; matrixInfluence.push([colorMatrix]);
+export const colorR = 17; matrixInfluence.push([colorMatrix]);
+export const colorG = 18; matrixInfluence.push([colorMatrix]);
+export const colorB = 19; matrixInfluence.push([colorMatrix]);
 
-export const parentSizeX = 20; matrixInfluence.push([]);
-export const parentSizeY = 21; matrixInfluence.push([]);
-export const parentSizeZ = 22; matrixInfluence.push([]);
+export const parentSizeX = 20; matrixInfluence.push([alignMatrix]);
+export const parentSizeY = 21; matrixInfluence.push([alignMatrix]);
+export const parentSizeZ = 22; matrixInfluence.push([alignMatrix]);
 
 export const sizeX = 23; matrixInfluence.push([sizeMatrix, originMatrix]);
 export const sizeY = 24; matrixInfluence.push([sizeMatrix, originMatrix]);
@@ -59,3 +59,7 @@ export const textureWidth = 28; matrixInfluence.push([uvMatrix]);
 export const textureHeight = 29; matrixInfluence.push([uvMatrix]);
 
 export const valueFields = 30;
+
+export const leftMouseButton = 0;
+export const rightMouseButton = 1;
+export const middleMouseButton = 2;

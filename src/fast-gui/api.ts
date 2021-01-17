@@ -1,8 +1,10 @@
 /// <reference path="../../reference/cristalix.d.ts" />
 
+import { overlay } from "../simple-gui";
 import { Color } from "./colors";
 import {AbstractElement, ItemElement, RectangleElement, TextElement} from './elements'
-import { runningTasks } from "./fast-gui";
+import { overlayLegacy, runningTasks, lastScreenState } from "./fast-gui";
+import { parentSizeX, parentSizeY } from "./index";
 
 export type V2 = { x?: number, y?: number };
 export type V3 = V2 & { z?: number };
@@ -52,13 +54,19 @@ export type ElementData = {
 
 export type RectData = {
 
-    texture?: string | ResourceLocation;
     size?: V2;
-    textureFrom?: V2;
-    textureSize?: V2;
+    texture?: TextureData;
     children?: AbstractElement[];
 
 } & ElementData;
+
+export type TextureData = {
+
+    resource?: string | ResourceLocation;
+    start?: V2;
+    size?: V2;
+
+}
 
 export function rect(data: RectData): RectangleElement {
     let element = new RectangleElement(data);
@@ -89,4 +97,20 @@ export function item(data: ItemData): ItemElement {
     return element;
 }
 
+export function removeFromOverlay(...elements: AbstractElement[]) {
+    for (let element of elements) {
+        let index = overlayLegacy.indexOf(element);
+        overlayLegacy.splice(index, 1);
+    }
+}
 
+export function addToOverlay(...elements: AbstractElement[]) {
+
+    for (let element of elements) {
+        element.setProperty(parentSizeX, lastScreenState.screenWidth);
+        element.setProperty(parentSizeY, lastScreenState.screenHeight);
+    }
+
+    overlayLegacy.push(...elements);
+
+}

@@ -166,15 +166,14 @@ export function getScreenState(): ScreenState {
     };
 }
 
-var lastScreenState = getScreenState();
+export var lastScreenState = getScreenState();
 var lastMouseState = [false, false, false];
 
 // let mouseX = Mouse.getX() / factor;
 // let mouseY = screenHeight - Mouse.getY() / factor;
 // let time = getTime();
 
-export const overlay: AbstractElement[] = [];
-
+export const overlayLegacy: AbstractElement[] = [];
 
 // export abstract class Context {
 
@@ -202,7 +201,8 @@ Events.on(plugin, 'gui_overlay_render', function (e) {
         lastScreenState.screenHeight != screenState.screenHeight || 
         lastScreenState.unicodeFlag != screenState.unicodeFlag
     ) {
-        for (let element of overlay) {
+        for (let element of overlayLegacy) {
+            // stdout.println();
             element.setProperty(index.parentSizeX, screenState.screenWidth);
             element.setProperty(index.parentSizeY, screenState.screenHeight);
         }
@@ -211,7 +211,7 @@ Events.on(plugin, 'gui_overlay_render', function (e) {
 
     updateAnimations();
 
-    for (let element of overlay) {
+    for (let element of overlayLegacy) {
         hoverCulling(element);
         // updateHoverStates(element, new Vector4f(Mouse.getX() / screenState.scaleFactor, (Display.getHeight() - Mouse.getY()) / screenState.scaleFactor, 0, 1));
         updateHoverStates(element, new Matrix4f().setIdentity(), {
@@ -275,7 +275,7 @@ Events.on(plugin, 'game_loop', function (event) {
         let oldState = lastMouseState[button];
         let newState = Mouse.isButtonDown(button);
         if (oldState != newState) {
-            let lastClickable = findLastClickable(overlay);
+            let lastClickable = findLastClickable(overlayLegacy);
             if (lastClickable) lastClickable.onClick(lastClickable, newState, button);
         }
         lastMouseState[button] = newState;
