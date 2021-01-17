@@ -111,6 +111,14 @@ export abstract class AbstractElement {
         if (z !== undefined) this.setProperty(index.offsetZ, z, duration, easingId, onFinish);
     }
 
+    public addOffset(offset: V3, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
+        this.setOffset({
+            x: this.properties[index.offsetX] + offset.x,
+            y: this.properties[index.offsetY] + offset.y,
+            z: this.properties[index.offsetZ] + offset.z,
+        }, duration, easingId, onFinish);
+    }
+
     public setAlign(align: V3, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
         let x = align.x;
         let y = align.y;
@@ -118,6 +126,14 @@ export abstract class AbstractElement {
         if (x !== undefined) this.setProperty(index.alignX, x, duration, easingId, onFinish);
         if (y !== undefined) this.setProperty(index.alignY, y, duration, easingId, onFinish);
         if (z !== undefined) this.setProperty(index.alignZ, z, duration, easingId, onFinish);
+    }
+
+    public addAlign(align: V3, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
+        this.setAlign({
+            x: this.properties[index.alignX] + align.x,
+            y: this.properties[index.alignY] + align.y,
+            z: this.properties[index.alignZ] + align.z,
+        }, duration, easingId, onFinish);
     }
 
     public setOrigin(origin: V3, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
@@ -129,6 +145,14 @@ export abstract class AbstractElement {
         if (z !== undefined) this.setProperty(index.originZ, z, duration, easingId, onFinish);
     }
 
+    public addOrigin(origin: V3, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
+        this.setOrigin({
+            x: this.properties[index.originX] + origin.x,
+            y: this.properties[index.originY] + origin.y,
+            z: this.properties[index.originZ] + origin.z,
+        }, duration, easingId, onFinish);
+    }
+
     public setScale(scale: V3, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
         let x = scale.x;
         let y = scale.y;
@@ -136,6 +160,14 @@ export abstract class AbstractElement {
         if (x !== undefined) this.setProperty(index.scaleX, x, duration, easingId, onFinish);
         if (y !== undefined) this.setProperty(index.scaleY, y, duration, easingId, onFinish);
         if (z !== undefined) this.setProperty(index.scaleZ, z, duration, easingId, onFinish);
+    }
+
+    public addScale(scale: V3, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
+        this.setAlign({
+            x: this.properties[index.scaleX] + scale.x,
+            y: this.properties[index.scaleY] + scale.y,
+            z: this.properties[index.scaleZ] + scale.z,
+        }, duration, easingId, onFinish);
     }
 
     public setRotation(rotation: Rotation, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
@@ -147,6 +179,10 @@ export abstract class AbstractElement {
         if (x !== undefined) this.setProperty(index.rotationX, x, duration, easingId);
         if (y !== undefined) this.setProperty(index.rotationY, y, duration, easingId);
         if (z !== undefined) this.setProperty(index.rotationZ, z, duration, easingId);
+    }
+
+    public addRotation(angle: number, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
+        this.setProperty(index.rotationAngle, angle, duration, easingId, onFinish);
     }
 
     public setProperty(propertyId: number, value: number, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
@@ -409,6 +445,14 @@ export class RectangleElement extends AbstractElement {
         if (x !== undefined) this.setProperty(index.sizeX, x, duration, easingId, onFinish);
         if (y !== undefined) this.setProperty(index.sizeY, y, duration, easingId, onFinish);
         if (z !== undefined) this.setProperty(index.sizeZ, z, duration, easingId, onFinish);
+    }
+
+    public addSize(size: V3, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
+        this.setAlign({
+            x: this.properties[index.sizeX] + size.x,
+            y: this.properties[index.sizeY] + size.y,
+            z: this.properties[index.sizeZ] + size.z,
+        }, duration, easingId, onFinish);
     }
 
 
