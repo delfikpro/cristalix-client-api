@@ -402,6 +402,16 @@ export class RectangleElement extends AbstractElement {
 
     }
 
+    public setSize(size: V3, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
+        let x = size.x;
+        let y = size.y;
+        let z = size.z;
+        if (x !== undefined) this.setProperty(index.sizeX, x, duration, easingId, onFinish);
+        if (y !== undefined) this.setProperty(index.sizeY, y, duration, easingId, onFinish);
+        if (z !== undefined) this.setProperty(index.sizeZ, z, duration, easingId, onFinish);
+    }
+
+
 }
 
 export class ItemElement extends AbstractElement {
