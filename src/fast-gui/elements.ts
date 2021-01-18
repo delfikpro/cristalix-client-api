@@ -99,68 +99,64 @@ export abstract class AbstractElement {
         let x = offset.x;
         let y = offset.y;
         let z = offset.z;
-        if ((x !== undefined) && (x === x)) this.setProperty(index.offsetX, x, duration, easingId, onFinish);
-        if ((y !== undefined) && (y === y)) this.setProperty(index.offsetY, y, duration, easingId, onFinish);
-        if ((z !== undefined) && (z === z)) this.setProperty(index.offsetZ, z, duration, easingId, onFinish);
+        if (x !== undefined) this.setProperty(index.offsetX, x, duration, easingId, onFinish);
+        if (y !== undefined) this.setProperty(index.offsetY, y, duration, easingId, onFinish);
+        if (z !== undefined) this.setProperty(index.offsetZ, z, duration, easingId, onFinish);
     }
 
     public addOffset(offset: V3, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
-        this.setOffset({
-            x: this.properties[index.offsetX] + offset.x,
-            y: this.properties[index.offsetY] + offset.y,
-            z: this.properties[index.offsetZ] + offset.z,
-        }, duration, easingId, onFinish);
+        let x = offset.x === undefined ? undefined : (offset.x + this.properties[index.offsetX]);
+        let y = offset.y === undefined ? undefined : (offset.y + this.properties[index.offsetY]);
+        let z = offset.z === undefined ? undefined : (offset.z + this.properties[index.offsetZ]);
+        this.setOffset({x, y, z}, duration, easingId, onFinish);
     }
 
     public setAlign(align: V3, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
         let x = align.x;
         let y = align.y;
         let z = align.z;
-        if (x !== undefined && x === x) this.setProperty(index.alignX, x, duration, easingId, onFinish);
-        if (y !== undefined && y === y) this.setProperty(index.alignY, y, duration, easingId, onFinish);
-        if (z !== undefined && z === z) this.setProperty(index.alignZ, z, duration, easingId, onFinish);
+        if (x !== undefined) this.setProperty(index.alignX, x, duration, easingId, onFinish);
+        if (y !== undefined) this.setProperty(index.alignY, y, duration, easingId, onFinish);
+        if (z !== undefined) this.setProperty(index.alignZ, z, duration, easingId, onFinish);
     }
 
     public addAlign(align: V3, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
-        this.setAlign({
-            x: this.properties[index.alignX] + align.x,
-            y: this.properties[index.alignY] + align.y,
-            z: this.properties[index.alignZ] + align.z,
-        }, duration, easingId, onFinish);
+        let x = align.x === undefined ? undefined : (align.x + this.properties[index.alignX]);
+        let y = align.y === undefined ? undefined : (align.y + this.properties[index.alignY]);
+        let z = align.z === undefined ? undefined : (align.z + this.properties[index.alignZ]);
+        this.setAlign({x, y, z}, duration, easingId, onFinish);
     }
 
     public setOrigin(origin: V3, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
         let x = origin.x;
         let y = origin.y;
         let z = origin.z;
-        if (x !== undefined && x === x) this.setProperty(index.originX, x, duration, easingId, onFinish);
-        if (y !== undefined && y === y) this.setProperty(index.originY, y, duration, easingId, onFinish);
-        if (z !== undefined && z === z) this.setProperty(index.originZ, z, duration, easingId, onFinish);
+        if (x !== undefined) this.setProperty(index.originX, x, duration, easingId, onFinish);
+        if (y !== undefined) this.setProperty(index.originY, y, duration, easingId, onFinish);
+        if (z !== undefined) this.setProperty(index.originZ, z, duration, easingId, onFinish);
     }
 
     public addOrigin(origin: V3, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
-        this.setOrigin({
-            x: this.properties[index.originX] + origin.x,
-            y: this.properties[index.originY] + origin.y,
-            z: this.properties[index.originZ] + origin.z,
-        }, duration, easingId, onFinish);
+        let x = origin.x === undefined ? undefined : (origin.x + this.properties[index.originX]);
+        let y = origin.y === undefined ? undefined : (origin.y + this.properties[index.originY]);
+        let z = origin.z === undefined ? undefined : (origin.z + this.properties[index.originZ]);
+        this.setOrigin({x, y, z}, duration, easingId, onFinish);
     }
 
     public setScale(scale: V3, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
         let x = scale.x;
         let y = scale.y;
         let z = scale.z;
-        if (x !== undefined && x === x) this.setProperty(index.scaleX, x, duration, easingId, onFinish);
-        if (y !== undefined && y === y) this.setProperty(index.scaleY, y, duration, easingId, onFinish);
-        if (z !== undefined && z === z) this.setProperty(index.scaleZ, z, duration, easingId, onFinish);
+        if (x !== undefined) this.setProperty(index.scaleX, x, duration, easingId, onFinish);
+        if (y !== undefined) this.setProperty(index.scaleY, y, duration, easingId, onFinish);
+        if (z !== undefined) this.setProperty(index.scaleZ, z, duration, easingId, onFinish);
     }
 
     public addScale(scale: V3, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
-        this.setAlign({
-            x: this.properties[index.scaleX] + scale.x,
-            y: this.properties[index.scaleY] + scale.y,
-            z: this.properties[index.scaleZ] + scale.z,
-        }, duration, easingId, onFinish);
+        let x = scale.x === undefined ? undefined : (scale.x + this.properties[index.scaleX]);
+        let y = scale.y === undefined ? undefined : (scale.y + this.properties[index.scaleY]);
+        let z = scale.z === undefined ? undefined : (scale.z + this.properties[index.scaleZ]);
+        this.setScale({x, y, z}, duration, easingId, onFinish);
     }
 
     public setColor(color: Color, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
@@ -168,19 +164,18 @@ export abstract class AbstractElement {
         let r = color.r;
         let g = color.g;
         let b = color.b;
-        if (a !== undefined && a === a) this.setProperty(index.colorA, a, duration, easingId, onFinish);
-        if (r !== undefined && r === r) this.setProperty(index.colorR, r, duration, easingId, onFinish);
-        if (g !== undefined && g === g) this.setProperty(index.colorG, g, duration, easingId, onFinish);
-        if (b !== undefined && b === b) this.setProperty(index.colorB, b, duration, easingId, onFinish);
+        if (a !== undefined) this.setProperty(index.colorA, a, duration, easingId, onFinish);
+        if (r !== undefined) this.setProperty(index.colorR, r, duration, easingId, onFinish);
+        if (g !== undefined) this.setProperty(index.colorG, g, duration, easingId, onFinish);
+        if (b !== undefined) this.setProperty(index.colorB, b, duration, easingId, onFinish);
     }
 
     public addColor(color: Color, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
-        this.setColor({
-            a: this.properties[index.colorA] + color.a,
-            r: this.properties[index.colorR] + color.r,
-            g: this.properties[index.colorG] + color.g,
-            b: this.properties[index.colorB] + color.b,
-        }, duration, easingId, onFinish);
+        let a = color.a === undefined ? undefined : (color.a + this.properties[index.colorA]);
+        let r = color.r === undefined ? undefined : (color.r + this.properties[index.colorR]);
+        let g = color.g === undefined ? undefined : (color.g + this.properties[index.colorG]);
+        let b = color.b === undefined ? undefined : (color.b + this.properties[index.colorB]);
+        this.setColor({a, r, g, b}, duration, easingId, onFinish);
     }
 
     public setRotation(rotation: Rotation, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
@@ -188,14 +183,14 @@ export abstract class AbstractElement {
         let y = rotation.y;
         let z = rotation.z;
         let angle = rotation.angle;
-        if (angle !== undefined && angle == angle) this.setProperty(index.rotationAngle, angle, duration, easingId);
-        if (x !== undefined && x === x) this.setProperty(index.rotationX, x, duration, easingId);
-        if (y !== undefined && y === y) this.setProperty(index.rotationY, y, duration, easingId);
-        if (z !== undefined && z === z) this.setProperty(index.rotationZ, z, duration, easingId);
+        if (angle !== undefined) this.setProperty(index.rotationAngle, angle, duration, easingId);
+        if (x !== undefined) this.setProperty(index.rotationX, x, duration, easingId);
+        if (y !== undefined) this.setProperty(index.rotationY, y, duration, easingId);
+        if (z !== undefined) this.setProperty(index.rotationZ, z, duration, easingId);
     }
 
     public addRotation(angle: number, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
-        this.setProperty(index.rotationAngle, angle, duration, easingId, onFinish);
+        if (angle !== undefined) this.setProperty(index.rotationAngle, angle, duration, easingId, onFinish);
     }
 
     public setProperty(propertyId: number, value: number, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
@@ -455,17 +450,16 @@ export class RectangleElement extends AbstractElement {
         let x = size.x;
         let y = size.y;
         let z = size.z;
-        if (x !== undefined && x === x) this.setProperty(index.sizeX, x, duration, easingId, onFinish);
-        if (y !== undefined && y === y) this.setProperty(index.sizeY, y, duration, easingId, onFinish);
-        if (z !== undefined && z === z) this.setProperty(index.sizeZ, z, duration, easingId, onFinish);
+        if (x !== undefined) this.setProperty(index.sizeX, x, duration, easingId, onFinish);
+        if (y !== undefined) this.setProperty(index.sizeY, y, duration, easingId, onFinish);
+        if (z !== undefined) this.setProperty(index.sizeZ, z, duration, easingId, onFinish);
     }
 
     public addSize(size: V3, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
-        this.setSize({
-            x: this.properties[index.sizeX] + size.x,
-            y: this.properties[index.sizeY] + size.y,
-            z: this.properties[index.sizeZ] + size.z,
-        }, duration, easingId, onFinish);
+        let x = size.x === undefined ? undefined : (size.x + this.properties[index.sizeX]);
+        let y = size.y === undefined ? undefined : (size.y + this.properties[index.sizeY]);
+        let z = size.z === undefined ? undefined : (size.z + this.properties[index.sizeZ]);
+        this.setSize({x, y, z}, duration, easingId, onFinish);
     }
 
 
