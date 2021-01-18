@@ -106,9 +106,9 @@ export abstract class AbstractElement {
         let x = offset.x;
         let y = offset.y;
         let z = offset.z;
-        if (x !== undefined) this.setProperty(index.offsetX, x, duration, easingId, onFinish);
-        if (y !== undefined) this.setProperty(index.offsetY, y, duration, easingId, onFinish);
-        if (z !== undefined) this.setProperty(index.offsetZ, z, duration, easingId, onFinish);
+        if (x !== undefined && x == x) this.setProperty(index.offsetX, x, duration, easingId, onFinish);
+        if (y !== undefined && y == y) this.setProperty(index.offsetY, y, duration, easingId, onFinish);
+        if (z !== undefined && z == z) this.setProperty(index.offsetZ, z, duration, easingId, onFinish);
     }
 
     public addOffset(offset: V3, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
@@ -123,9 +123,9 @@ export abstract class AbstractElement {
         let x = align.x;
         let y = align.y;
         let z = align.z;
-        if (x !== undefined) this.setProperty(index.alignX, x, duration, easingId, onFinish);
-        if (y !== undefined) this.setProperty(index.alignY, y, duration, easingId, onFinish);
-        if (z !== undefined) this.setProperty(index.alignZ, z, duration, easingId, onFinish);
+        if (x !== undefined && x == x) this.setProperty(index.alignX, x, duration, easingId, onFinish);
+        if (y !== undefined && y == y) this.setProperty(index.alignY, y, duration, easingId, onFinish);
+        if (z !== undefined && z == z) this.setProperty(index.alignZ, z, duration, easingId, onFinish);
     }
 
     public addAlign(align: V3, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
@@ -140,9 +140,9 @@ export abstract class AbstractElement {
         let x = origin.x;
         let y = origin.y;
         let z = origin.z;
-        if (x !== undefined) this.setProperty(index.originX, x, duration, easingId, onFinish);
-        if (y !== undefined) this.setProperty(index.originY, y, duration, easingId, onFinish);
-        if (z !== undefined) this.setProperty(index.originZ, z, duration, easingId, onFinish);
+        if (x !== undefined && x == x) this.setProperty(index.originX, x, duration, easingId, onFinish);
+        if (y !== undefined && y == y) this.setProperty(index.originY, y, duration, easingId, onFinish);
+        if (z !== undefined && z == z) this.setProperty(index.originZ, z, duration, easingId, onFinish);
     }
 
     public addOrigin(origin: V3, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
@@ -157,9 +157,9 @@ export abstract class AbstractElement {
         let x = scale.x;
         let y = scale.y;
         let z = scale.z;
-        if (x !== undefined) this.setProperty(index.scaleX, x, duration, easingId, onFinish);
-        if (y !== undefined) this.setProperty(index.scaleY, y, duration, easingId, onFinish);
-        if (z !== undefined) this.setProperty(index.scaleZ, z, duration, easingId, onFinish);
+        if (x !== undefined && x == x) this.setProperty(index.scaleX, x, duration, easingId, onFinish);
+        if (y !== undefined && y == y) this.setProperty(index.scaleY, y, duration, easingId, onFinish);
+        if (z !== undefined && z == z) this.setProperty(index.scaleZ, z, duration, easingId, onFinish);
     }
 
     public addScale(scale: V3, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
@@ -175,10 +175,10 @@ export abstract class AbstractElement {
         let r = color.r;
         let g = color.g;
         let b = color.b;
-        if (a !== undefined) this.setProperty(index.colorA, a, duration, easingId, onFinish);
-        if (r !== undefined) this.setProperty(index.colorR, r, duration, easingId, onFinish);
-        if (g !== undefined) this.setProperty(index.colorG, g, duration, easingId, onFinish);
-        if (b !== undefined) this.setProperty(index.colorB, b, duration, easingId, onFinish);
+        if (a !== undefined && a == a) this.setProperty(index.colorA, a, duration, easingId, onFinish);
+        if (r !== undefined && r == r) this.setProperty(index.colorR, r, duration, easingId, onFinish);
+        if (g !== undefined && g == g) this.setProperty(index.colorG, g, duration, easingId, onFinish);
+        if (b !== undefined && b == b) this.setProperty(index.colorB, b, duration, easingId, onFinish);
     }
 
     public addColor(color: Color, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
@@ -195,10 +195,10 @@ export abstract class AbstractElement {
         let y = rotation.y;
         let z = rotation.z;
         let angle = rotation.angle;
-        if (angle !== undefined) this.setProperty(index.rotationAngle, angle, duration, easingId);
-        if (x !== undefined) this.setProperty(index.rotationX, x, duration, easingId);
-        if (y !== undefined) this.setProperty(index.rotationY, y, duration, easingId);
-        if (z !== undefined) this.setProperty(index.rotationZ, z, duration, easingId);
+        if (angle !== undefined && angle == angle) this.setProperty(index.rotationAngle, angle, duration, easingId);
+        if (x !== undefined && x == x) this.setProperty(index.rotationX, x, duration, easingId);
+        if (y !== undefined && y == y) this.setProperty(index.rotationY, y, duration, easingId);
+        if (z !== undefined && z == z) this.setProperty(index.rotationZ, z, duration, easingId);
     }
 
     public addRotation(angle: number, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
@@ -462,9 +462,9 @@ export class RectangleElement extends AbstractElement {
         let x = size.x;
         let y = size.y;
         let z = size.z;
-        if (x !== undefined) this.setProperty(index.sizeX, x, duration, easingId, onFinish);
-        if (y !== undefined) this.setProperty(index.sizeY, y, duration, easingId, onFinish);
-        if (z !== undefined) this.setProperty(index.sizeZ, z, duration, easingId, onFinish);
+        if (x !== undefined && x == x) this.setProperty(index.sizeX, x, duration, easingId, onFinish);
+        if (y !== undefined && y == y) this.setProperty(index.sizeY, y, duration, easingId, onFinish);
+        if (z !== undefined && z == z) this.setProperty(index.sizeZ, z, duration, easingId, onFinish);
     }
 
     public addSize(size: V3, duration?: number, easingId?: number, onFinish?: AnimationFinisher): void {
