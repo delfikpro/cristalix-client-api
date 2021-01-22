@@ -10,6 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "@cristalix/bundler": "^1.1.7",
-    "@cristalix/client-api": "^2.1.7"
+    "@cristalix/client-api": "^2.3.10"
   }
 }

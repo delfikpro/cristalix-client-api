@@ -1,6 +1,6 @@
 {
   "name": "@cristalix/bundler",
-  "version": "1.1.7",
+  "version": "1.2.0",
   "description": "Bundler for Cristalix client scripts",
   "main": "./index.js",
   "bin": {

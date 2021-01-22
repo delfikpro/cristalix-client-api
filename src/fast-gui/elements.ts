@@ -19,8 +19,8 @@ export abstract class AbstractElement {
     public dirtyMatrices: number[];
     public hovered: boolean;
 
-    public beforeRender?: () => void;
-    public afterRender?: () => void;
+    public beforeRender?: () => any;
+    public afterRender?: () => any;
 
     public passedHoverCulling: boolean;
     public cachedHexColor: number;
@@ -421,7 +421,12 @@ export class RectangleElement extends AbstractElement {
         if (this.texture) {
             GlStateManager.enableBlend();
             Textures.bindTexture(this.texture);
-            GL11.glColor4f(1, 1, 1, 1);
+            GL11.glColor4f(
+                properties[index.colorR],
+                properties[index.colorG],
+                properties[index.colorB],
+                properties[index.colorA],
+            );
 
             let precision = 0x4000_0000;
 

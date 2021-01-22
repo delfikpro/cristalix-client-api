@@ -55,7 +55,7 @@ export class Animation {
         } else {
             this.startedTime = 0.0;
             value = this.targetValue;
-            if (this.onFinish) this.onFinish(false);
+            if (this.onFinish) this.onFinish(true);
             this.onFinish = null;
         }
         this.lastValue = value;

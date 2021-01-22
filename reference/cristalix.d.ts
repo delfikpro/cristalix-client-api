@@ -887,7 +887,7 @@ declare class GL11 {
 
     static glRotatef(degrees: float, x: float, y: float, z: float): void;
 
-    static glColor4f(a: float, r: float, g: float, b: float): void;
+    static glColor4f(r: float, g: float, b: float, a: number): void;
 
     static glPushMatrix(): void;
 
@@ -1041,7 +1041,7 @@ declare type MousePressEvent = {
     pressed: boolean,
 };
 
-declare type EventAction = 'chat_send' | 'gui_overlay_render' | 'game_loop' | 'static KEY_press' | 'server_connect' | 'server_switch' | 'overlay_render' | 'game_tick_pre' | 'game_tick_post' | 'player_list_render' | 'air_bar_render' | 'hotbar_render' | 'potions_render' | 'exp_render' | 'armor_render' | 'health_render' | 'hunger_render' | 'mouse_press' | string;
+declare type EventAction = 'chat_send' | 'gui_overlay_render' | 'game_loop' | 'key_press' | 'server_connect' | 'server_switch' | 'overlay_render' | 'game_tick_pre' | 'game_tick_post' | 'player_list_render' | 'air_bar_render' | 'hotbar_render' | 'potions_render' | 'exp_render' | 'armor_render' | 'health_render' | 'hunger_render' | 'mouse_press' | string;
 declare type Listener<T> = (event: T) => void;
 
 declare class Events {

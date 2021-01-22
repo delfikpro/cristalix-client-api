@@ -45,8 +45,8 @@ export type ElementData = {
     rotation?: Rotation;
     color?: Color;
     enabled?: boolean;
-    beforeRender?: () => {};
-    afterRender?: () => {};
+    beforeRender?: () => any;
+    afterRender?: () => any;
     onClick?: (element: AbstractElement, down: boolean, button: number) => void;
     onHover?: (element: AbstractElement, hovered: boolean) => void;
 
@@ -70,7 +70,7 @@ export type TextureData = {
 
 export function rect(data: RectData): RectangleElement {
     let element = new RectangleElement(data);
-    element.cleanMatrices();
+    // element.cleanMatrices();
     return element;
 }
 
@@ -82,7 +82,7 @@ export type TextData = {
 
 export function text(data: TextData): TextElement {
     let element = new TextElement(data);
-    element.cleanMatrices();
+    // element.cleanMatrices();
     return element;
 }
 
@@ -93,7 +93,7 @@ export type ItemData = {
 
 export function item(data: ItemData): ItemElement {
     let element = new ItemElement(data);
-    element.cleanMatrices();
+    // element.cleanMatrices();
     return element;
 }
 
