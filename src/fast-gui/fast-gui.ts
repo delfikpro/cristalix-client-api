@@ -223,8 +223,8 @@ Events.on(plugin, 'gui_overlay_render', function (e) {
 
 });
 
-Events.on(plugin, 'mouse_press', (event: MousePressEvent) => {
-});
+// Events.on(plugin, 'mouse_press', (event: MousePressEvent) => {
+// });
 
 function findLastClickable(elements: AbstractElement[]): AbstractElement {
     let lastClickable: AbstractElement

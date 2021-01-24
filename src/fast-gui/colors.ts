@@ -7,6 +7,8 @@ export type Color = {
     b?: number;
 }
 
+export const WHITE = {a: 1, r: 1, g: 1, b: 1};
+
 export function color2Hex(color: Color): number {
     return colorParts2Hex(color.a, color.r, color.g, color.b);
 }

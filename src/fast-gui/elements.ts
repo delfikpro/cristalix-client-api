@@ -1,7 +1,7 @@
 /// <reference path="../../reference/cristalix.d.ts" />
 
 import { AnimationFinisher, ElementData, RectData, ItemData, TextData, Rotation, V3 } from './api';
-import { Color, colorParts2Hex } from './colors';
+import { Color, colorParts2Hex, WHITE } from './colors';
 import { runningAnimations, Animation } from './fast-gui';
 import * as index from './index';
 
@@ -325,6 +325,7 @@ export class TextElement extends AbstractElement {
     public shadow: boolean;
 
     constructor(data: TextData) {
+        if (!data.color) data.color = WHITE;
         super(data);
         this.text = data.text || "";
         this.shadow = !!data.shadow;
@@ -355,7 +356,15 @@ export class TextElement extends AbstractElement {
         // GlStateManager.disableDepth();
 
         // ToDo: colored text
-        fontRenderer.drawString(this.text, 0, fontRenderer.getUnicodeFlag() ? 0 : 1, -1, this.shadow);
+        let alpha = this.cachedHexColor >>> 24;
+
+        // There is a weird behaviour of vanilla fontRenderer, that disables transparency if the alpha value is lower than 5.
+        // Perhaps that's yet another bodge by mojang to quickly implement some cool font-related effect.
+        // Anyways, that's quite unnoticable, so fastgui just discards these barely visible text elements.
+        if (alpha < 5) return;
+
+        if (alpha != 1) GlStateManager.enableBlend();
+        fontRenderer.drawString(this.text, 0, fontRenderer.getUnicodeFlag() ? 0 : 1, this.cachedHexColor, this.shadow);
 
         // GL11.glDepthFunc(GL11.GL_LEQUAL);
         // GlStateManager.enableDepth();
@@ -394,6 +403,24 @@ export class RectangleElement extends AbstractElement {
 
 
         this.children = data.children || [];
+
+    }
+    
+    public removeChild(...elements: AbstractElement[]) {
+        for (let element of elements) {
+            let index = this.children.indexOf(element);
+            this.children.splice(index, 1);
+        }
+    }
+
+    public addChild(...elements: AbstractElement[]) {
+
+        for (let element of elements) {
+            element.setProperty(index.parentSizeX, this.properties[index.sizeX]);
+            element.setProperty(index.parentSizeY, this.properties[index.sizeY]);
+        }
+
+        this.children.push(...elements);
 
     }
 
