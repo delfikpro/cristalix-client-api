@@ -85,6 +85,15 @@ export abstract class AbstractElement {
 
         this.cleanMatrices();
 
+        let {properties} = this;
+        
+        GL11.glColor4f(
+            properties[index.colorR], 
+            properties[index.colorG], 
+            properties[index.colorB], 
+            properties[index.colorA], 
+        );
+
         for (let i = 0; i < index.matrixFields; i++) {
             let matrix = this.matrices[i];
             if (matrix) {
@@ -301,7 +310,6 @@ export abstract class AbstractElement {
         if (!this.enabled) return;
 
         glPushMatrix();
-        this.cleanMatrices();
         this.applyTransformations();
 
         if (this.beforeRender) this.beforeRender();
@@ -448,12 +456,8 @@ export class RectangleElement extends AbstractElement {
         if (this.texture) {
             GlStateManager.enableBlend();
             Textures.bindTexture(this.texture);
-            GL11.glColor4f(
-                properties[index.colorR],
-                properties[index.colorG],
-                properties[index.colorB],
-                properties[index.colorA],
-            );
+
+            GlStateManager.enableAlpha();
 
             let precision = 0x4000_0000;
 
@@ -467,6 +471,7 @@ export class RectangleElement extends AbstractElement {
                 precision,
                 precision
             );
+            
         }
         else {
             Draw.drawRect(0, 0, properties[index.sizeX], properties[index.sizeY], this.cachedHexColor);

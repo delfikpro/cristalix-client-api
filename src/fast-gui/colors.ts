@@ -14,7 +14,7 @@ export function color2Hex(color: Color): number {
 }
 
 export function colorParts2Hex(a: number, r: number, g: number, b: number): number {
-    return a * 255 << 24 |
+    return (Math.floor(a * 255) & 0xFF) << 24 |
         r * 255 << 16 |
         g * 255 << 8 |
         b * 255;
