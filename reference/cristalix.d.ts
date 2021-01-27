@@ -537,6 +537,19 @@ declare class ByteBuf {
     resetReaderIndex(): void;
 
     resetWriterIndex(): void;
+
+    toString(charset: Charset): string;
+
+}
+
+declare class Charset {
+
+}
+
+declare class StandardCharsets {
+
+    static UTF_8: Charset;
+
 }
 
 declare class ByteBuffer {
