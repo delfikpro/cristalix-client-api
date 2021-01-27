@@ -935,6 +935,8 @@ declare class GlStateManager {
 
     static enableBlend(): void;
 
+    static enableAlpha(): void;
+
     static tryBlendFuncSeparate(a: int, b: int, c: int, d: int): void;
 
     static disableTexture2D(): void;
